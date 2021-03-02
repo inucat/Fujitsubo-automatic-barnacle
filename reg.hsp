@@ -1,30 +1,27 @@
 ; ‚Ó‚¶‚Â‚Ú Automatic-Fujitsubo
-; (C) 2021 inucat
+; (C) 2021 inucat. Under GNU GPL.
 APP_TITLE="‚Ó‚¶‚Â‚Ú Automatic-Fujitsubo"
 title APP_TITLE
-APP_VER="0.9 beta"
+APP_VER="0.1.0"
 
-;#uselib "kernel32"
-;#func Wow64DisableWow64FsRedirection "Wow64DisableWow64FsRedirection" var
-;#func Wow64RevertWow64FsRedirection "Wow64RevertWow64FsRedirection" var
 #packopt	name	"Fujitsubo"
-#include "hspext.as"
-#include "hspinet.as"
-#cmpopt varinit 1	; –¢‰Šú‰»‚Ì•Ï”QÆ‚ğƒGƒ‰[‚É‚·‚é
+#include	"hspext.as"
+#include	"hspinet.as"
+#cmpopt		varinit 1	; –¢‰Šú‰»‚Ì•Ï”QÆ‚ğƒGƒ‰[‚É‚·‚é
 
-#const N 7
-#const CHK_W 128
+#const N 7				; İ’è‰Â”\‚ÈƒtƒHƒ‹ƒ_‚Í7ŒÂ
+#const CHK_W 128		; ƒ`ƒFƒbƒNƒ{ƒbƒNƒXEƒ{ƒ^ƒ“‚Ì•
 
 screen ,280,240
 
 ROOT = "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FolderDescriptions"
-P_KEY =		"{0ddd015d-b06c-45d5-8c4c-f59713854639}\\PropertyBag"
-V_KEY =		"{35286a68-3c57-41a1-bbb1-0eae73d76c95}\\PropertyBag"
-DL_KEY =	"{7d83ee9b-2244-4e70-b1f5-5393042af1e4}\\PropertyBag"
-M_KEY =		"{a0c69a99-21c8-4671-8703-7934162fcf1d}\\PropertyBag"
-DOC_KEY =	"{f42ee2d3-909f-4907-8871-4c22fc0bf756}\\PropertyBag"
-DES_KEY =	"{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}\\PropertyBag"
-D3_KEY =	"{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\\PropertyBag"
+P_KEY =		"{0ddd015d-b06c-45d5-8c4c-f59713854639}\\PropertyBag"	; ƒsƒNƒ`ƒƒ
+V_KEY =		"{35286a68-3c57-41a1-bbb1-0eae73d76c95}\\PropertyBag"	; ƒrƒfƒI
+DL_KEY =	"{7d83ee9b-2244-4e70-b1f5-5393042af1e4}\\PropertyBag"	; ƒ_ƒEƒ“ƒ[ƒh
+M_KEY =		"{a0c69a99-21c8-4671-8703-7934162fcf1d}\\PropertyBag"	; ƒ~ƒ…[ƒWƒbƒN
+DOC_KEY =	"{f42ee2d3-909f-4907-8871-4c22fc0bf756}\\PropertyBag"	; ƒhƒLƒ…ƒƒ“ƒg
+DES_KEY =	"{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}\\PropertyBag"	; ƒfƒXƒNƒgƒbƒv
+D3_KEY =	"{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\\PropertyBag"	; 3D
 
 dim isVisible,N
 dim keyList,N
@@ -33,10 +30,11 @@ dim keyLabel,N
 keyLabel="ƒsƒNƒ`ƒƒ","ƒrƒfƒI","ƒ_ƒEƒ“ƒ[ƒh","ƒ~ƒ…[ƒWƒbƒN","ƒhƒLƒ…ƒƒ“ƒg","ƒfƒXƒNƒgƒbƒv","3D ƒIƒuƒWƒFƒNƒg"
 
 *load_keys
+	cls 1
+	mes "ƒŒƒWƒXƒgƒŠ‚Ì“Ç‚İæ‚è’†..."
 	logmes "\n===LOADING KEYS==="
 	foreach keyList
 		logmes "------"
-		;regkey 1,(ROOT+"\\"+keyList.cnt),0						;	ƒL[‚ª‘¶İ‚·‚ê‚Î“Ç‚İ‚İ
 
 		sdim buf,32000
 		sdim ln,4096
@@ -44,27 +42,12 @@ keyLabel="ƒsƒNƒ`ƒƒ","ƒrƒfƒI","ƒ_ƒEƒ“ƒ[ƒh","ƒ~ƒ…[ƒWƒbƒN","ƒhƒLƒ…ƒƒ“ƒg","ƒfƒXƒ
 		if stat : dialog "—\Šú‚µ‚È‚¢ƒŒƒWƒXƒgƒŠEƒGƒ‰[‚ª”­¶‚µ‚Ü‚µ‚½B" : end
 		repeat
 			pipeget ln
-			if stat==0 : break
+			if stat == 0 : break
 			wait 1
 		loop
 		logmes buf
 		if instr( buf , , "Hide" ) < 0 : isVisible.cnt=1 : else : isVisible.cnt=0
-		
-		;logmes "Key: "+keyList.cnt
-		;logmes "regkey result: STAT == "+stat
-		;if stat {
-			;regkey 1,(ROOT+"\\"+keyList.cnt),1
-		;	continue
-		;}														;	”ñ‘¶İ‚Ìê‡‚Íì¬ƒ‚[ƒh
-		
-		;policy=""
-		;getreg policy,"ThisPCPolicy",1
-		;logmes "getreg result: STAT == "+stat
-		;logmes "ThisPCPolicy=" + policy
-		;if stat : continue	;	’l‚ª”ñ‘¶İ‚Ìê‡
-		;if policy == "Show" : isVisible.cnt = 1 : else : isVisible.cnt = 0
 	loop
-	;policy=""
 
 *fresh_gui
 	cls 1
@@ -85,38 +68,6 @@ keyLabel="ƒsƒNƒ`ƒƒ","ƒrƒfƒI","ƒ_ƒEƒ“ƒ[ƒh","ƒ~ƒ…[ƒWƒbƒN","ƒhƒLƒ…ƒƒ“ƒg","ƒfƒXƒ
 	stop
 
 *apply
-	/*
-	// WOW64‚ÌƒŠƒ_ƒCƒŒƒNƒg‚ğˆê“I‚É–³Œø‚É
-	OldValue = 0
-	Wow64DisableWow64FsRedirection OldValue
-	foreach keyList
-		logmes "------"
-		regkey 1,(ROOT+"\\"+keyList.cnt),0
-		logmes "regkey result: STAT == "+stat
-		if stat {
-			regkey 1,(ROOT+"\\"+keyList.cnt),1
-			continue
-		}														;	”ñ‘¶İ‚Ìê‡‚Íì¬ƒ‚[ƒh
-		policy=""
-		if isVisible.cnt == 0 : policy = "Hide" : else : policy = "Show"
-		logmes ROOT+"\\"+keyList.cnt
-		logmes "will be set to: " + policy
-		setreg policy,"ThisPCPolicy",1
-		logmes "setreg result: STAT == "+stat
-		if stat {
-			dialog "•ÏX‚Ì“K—p‚É‚ÍŠÇ—ÒŒ ŒÀ‚ª•K—v‚Å‚·B\n—v‹‚³‚ê‚½•ÏX‚ğŠü‹p‚µ‚Ü‚µ‚½B",1,"ƒŒƒWƒXƒgƒŠ‘‚«‚İƒGƒ‰["
-			goto *load_keys
-		}
-		getreg policy,"ThisPCPolicy",1
-		logmes "getreg result: STAT == "+stat
-		logmes "ThisPCPolicy=" + policy
-		policy=""
-	loop
-	// ˆ—‚ªI‚í‚Á‚½‚ç‚·‚®‚É–ß‚·
-	Wow64RevertWow64FsRedirection OldValue
-	stop
-	reg add HKLM\software\microsoft\windows\currentversion\explorer\folderdescriptions\{0ddd015d-b06c-45d5-8c4c-f59713854639}\PropertyBag /v ThisPCPolicy /d Show /reg:64
-*/
 	logmes "\n===APPLYING==="
 	foreach keyList
 		policy=""

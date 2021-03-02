@@ -2,4 +2,8 @@ hsptmp
 obj
 packfile
 start.ax
+
+# binary
 *.exe
+*-release-bin/
+
