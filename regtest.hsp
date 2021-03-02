@@ -1,0 +1,48 @@
+a="Koon"
+if a == "Koon" : mes a
+;
+#include "hsp3_64.as"
+#include "hspext.as"
+
+#const N 7
+
+ROOT = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FolderDescriptions"
+P_KEY =		"{0ddd015d-b06c-45d5-8c4c-f59713854639}\\PropertyBag"
+
+dim isVisible,N
+dim keyList,N
+keyList=P_KEY
+dim keyLabel,N
+keyLabel="ピクチャ","ビデオ","ダウンロード","ミュージック","ドキュメント","デスクトップ","3D オブジェクト"
+
+*load_keys
+	logmes "\n===LOADING KEYS==="
+	foreach keyList
+		logmes "------"
+		regkey 1,(ROOT+"\\"+keyList.cnt),0						;	キーが存在すれば読み込み
+		logmes "Key: "+keyList.cnt
+		logmes "regkey result: STAT == "+stat
+		if stat {
+			regkey 1,(ROOT+"\\"+keyList.cnt),1
+		}														;	非存在の場合は作成モード
+		
+		policy=""
+		getreg policy,"ThisPCPolicy2",1
+		logmes "getreg result: STAT == "+stat
+		logmes "ThisPCPolicy2=" + policy
+		;if stat : continue	;	値が非存在の場合
+		if policy == "Show" : isVisible.cnt = 1 : else : isVisible.cnt = 0
+
+		policy="Unchi"
+		setreg policy,"ThisPCPolicy2",1
+		logmes "setreg result: STAT == "+stat
+		if stat {
+			dialog "変更の適用には管理者権限が必要です。\n要求された変更を棄却しました。",1,"レジストリ書き込みエラー"
+			end
+		}
+		getreg policy,"ThisPCPolicy2",1
+		logmes "getreg result: STAT == "+stat
+		logmes "ThisPCPolicy2=" + policy
+		policy=""
+	loop
+	policy=""
