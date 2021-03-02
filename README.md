@@ -6,6 +6,9 @@ Toggle Show/Hide your personal folders in the PC on Windows 10!<br>
 ---
 
 ## クイックガイド
+### ダウンロード
+GitHubページの右にある"Release"からダウンロード可能です。
+
 ### 使い方
 1. `fujitsubo.exe`を**管理者として**実行する（レジストリ情報の取得に多少時間がかかります）。
 1. 非表示にしたいフォルダの**チェックを外す**（表示しておきたいフォルダのチェックはそのまま）。
@@ -22,7 +25,7 @@ Toggle Show/Hide your personal folders in the PC on Windows 10!<br>
 ## 既知の問題点
 - "PC" だけでなくユーザフォルダ`%USERPROFILE%`からも隠れてしまう（かなり致命的ですが仕様なんです……）。
     - → 回避策:`%HOMEPATH%`からアクセスする。
-- 起動時にUIの表示まで時間がかかる。
+- レジストリの読み込みに時間がかかる。
 
 ## 告知事項
 作者はこのソフトウェアに不具合のないことを保証しません。
@@ -49,7 +52,7 @@ Toggle Show/Hide your personal folders in the PC on Windows 10!<br>
 - Github: inucat
 
 ## 変更履歴
-`2021.03` 初版(v1)公開
+`2021.03` 初版公開
 
 <!--
 ---
