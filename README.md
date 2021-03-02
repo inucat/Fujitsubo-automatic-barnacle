@@ -7,7 +7,7 @@ Toggle Show/Hide your personal folders in the PC on Windows 10!<br>
 
 ## クイックガイド
 ### ダウンロード
-GitHubページの右にある"Release"からダウンロード可能です。
+GitHubページ（ここ）の右にある"Releases"からダウンロード可能です。
 
 ### 使い方
 1. `fujitsubo.exe`を**管理者として**実行する（レジストリ情報の取得に多少時間がかかります）。

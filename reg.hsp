@@ -1,6 +1,6 @@
 ; ‚Ó‚¶‚Â‚Ú Automatic-Fujitsubo
 ; (C) 2021 inucat. Under GNU GPL.
-APP_TITLE="‚Ó‚¶‚Â‚Ú Automatic-Fujitsubo"
+APP_TITLE="‚Ó‚¶‚Â‚Ú Fujitsubo"
 title APP_TITLE
 APP_VER="0.1.0"
 
@@ -71,7 +71,7 @@ keyLabel="ƒsƒNƒ`ƒƒ","ƒrƒfƒI","ƒ_ƒEƒ“ƒ[ƒh","ƒ~ƒ…[ƒWƒbƒN","ƒhƒLƒ…ƒƒ“ƒg","ƒfƒXƒ
 	logmes "\n===APPLYING==="
 	foreach keyList
 		policy=""
-		errlv="OKASHIMOCHI"
+		; errlv="OKASHIMOCHI"
 		if isVisible.cnt == 0 : policy = "Hide" : else : policy = "Show"
 		
 		logmes "------"
@@ -84,8 +84,8 @@ keyLabel="ƒsƒNƒ`ƒƒ","ƒrƒfƒI","ƒ_ƒEƒ“ƒ[ƒh","ƒ~ƒ…[ƒWƒbƒN","ƒhƒLƒ…ƒƒ“ƒg","ƒfƒXƒ
 			if stat==0 : break
 			wait 1
 		loop
-		getenv errlv,"errorlevel"
-		logmes errlv
+		; getenv errlv,"errorlevel"
+		; logmes errlv
 		logmes buf
 		if instr( buf , , "Hide" ) < 0 : isVisible.cnt=1 : else : isVisible.cnt=0
 	loop
