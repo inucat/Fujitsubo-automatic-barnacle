@@ -1,6 +1,6 @@
 # ふじつぼ Fujitsubo-automatic-barnacle
 Windows 10 で "PC" 内の個人フォルダの表示・非表示を切り替えるソフトです。<br>
-Toggle Show/Hide your personal folders in the PC on Windows 10!<br>
+Toggle Show/Hide folders in "This PC" on Windows 10!<br>
 ![Example](./doc/fuji2.PNG)
 
 ---
@@ -19,12 +19,14 @@ GitHubページ（ここ）の右にある"Releases"からダウンロード可�
 
 ## 動作の仕組み
 レジストリの書き換えによって表示を切り替えています。<br>
-これは`HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions`以下の値を`regedit.exe`で書き換えることと同じです。<br>
+これは`HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\`以下のキーを`regedit.exe`で書き換えることと同じです。<br>
+~~これは`HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions`以下の値を`regedit.exe`で書き換えることと同じです。~~<br>
 よって万が一の時は手動で書き換えることもできます。
 
 ## 既知の問題点
-- "PC" だけでなくユーザフォルダ`%USERPROFILE%`からも隠れてしまう（かなり致命的ですが仕様なんです……）。
+<!-- - "PC" だけでなくユーザフォルダ`%USERPROFILE%`からも隠れてしまう（かなり致命的ですが仕様なんです……）。
     - → 回避策:`%HOMEPATH%`からアクセスする。
+ -->
 - レジストリの読み込みに時間がかかる。
 
 ## 告知事項
@@ -38,11 +40,11 @@ GitHubページ（ここ）の右にある"Releases"からダウンロード可�
 
 ## 基本情報
 |**アプリ名**|ふじつぼ|
-|---|---|
-|**バージョン**|0.1.0|
+|:---:|:---:|
+|**バージョン**|0.2.0|
 |**作者**|inucat|
 |**開発言語**|Hot Soup Processor 3|
-|**動作環境**|Windows 10|
+|**動作環境**|Windows 10 64bit版|
 |**対応言語**|日本語|
 |**ライセンス**|GNU GENERAL PUBLIC LICENSE|
 
@@ -52,7 +54,8 @@ GitHubページ（ここ）の右にある"Releases"からダウンロード可�
 - Github: inucat
 
 ## 変更履歴
-`2021.03` 初版公開
+2021-03-03 v0.2.0 ユーザフォルダ`%USERPROFILE%`からは隠れないように仕様変更。
+2021-03-02 v0.1.0 初版公開
 
 <!--
 ---
@@ -72,8 +75,8 @@ Make sure all folders are checked then "Apply changes."
 You can modify the `ThisPCPolicy` values under the key `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions` manually with `regedit.exe`. 
 
 ## Known issues
-- Folders also disappear from user folder `%USERPROFILE%`, not only from "PC".
-    - -> Workaround: access from `%HOMEPATH%`.
+- It takes some long time to load the registry data.
+    - Please be patient...
 
 ## NOTICE
 There are NO WARRANTY that this software is perfect and without any bugs or glitches.
@@ -86,11 +89,11 @@ See `LICENSE` for details.
 
 ## Basic Information
 |**Application Name**|Fujitsubo|
-|---|---|
-|**Version**|0.1.0|
+|:---:|:---:|
+|**Version**|0.2.0|
 |**Author**|inucat|
 |**Built on**|Hot Soup Processor 3|
-|**Required Environment**|Windows 10|
+|**Required Environment**|Windows 10 64bit|
 |**Language**|English, Japanese|
 |**License**|GNU GENERAL PUBLIC LICENSE|
 

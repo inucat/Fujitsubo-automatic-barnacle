@@ -2,9 +2,10 @@
 ; (C) 2021 inucat. Under GNU GPL.
 APP_TITLE="‚Ó‚¶‚Â‚Ú Fujitsubo"
 title APP_TITLE
-APP_VER="0.1.0"
+APP_VER="0.2.0"
 
 #packopt	name	"Fujitsubo"
+#packopt	manifest	"fujitsubo.exe.manifest"
 #include	"hspext.as"
 #include	"hspinet.as"
 #cmpopt		varinit 1	; –¢‰Šú‰»‚Ì•Ï”QÆ‚ğƒGƒ‰[‚É‚·‚é
@@ -12,50 +13,60 @@ APP_VER="0.1.0"
 #const N 7				; İ’è‰Â”\‚ÈƒtƒHƒ‹ƒ_‚Í7ŒÂ
 #const CHK_W 128		; ƒ`ƒFƒbƒNƒ{ƒbƒNƒXEƒ{ƒ^ƒ“‚Ì•
 
-screen ,280,240
-
-ROOT = "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FolderDescriptions"
-P_KEY =		"{0ddd015d-b06c-45d5-8c4c-f59713854639}\\PropertyBag"	; ƒsƒNƒ`ƒƒ
-V_KEY =		"{35286a68-3c57-41a1-bbb1-0eae73d76c95}\\PropertyBag"	; ƒrƒfƒI
-DL_KEY =	"{7d83ee9b-2244-4e70-b1f5-5393042af1e4}\\PropertyBag"	; ƒ_ƒEƒ“ƒ[ƒh
-M_KEY =		"{a0c69a99-21c8-4671-8703-7934162fcf1d}\\PropertyBag"	; ƒ~ƒ…[ƒWƒbƒN
-DOC_KEY =	"{f42ee2d3-909f-4907-8871-4c22fc0bf756}\\PropertyBag"	; ƒhƒLƒ…ƒƒ“ƒg
-DES_KEY =	"{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}\\PropertyBag"	; ƒfƒXƒNƒgƒbƒv
-D3_KEY =	"{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\\PropertyBag"	; 3D
+; ROOT = "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FolderDescriptions"
+; P_KEY =		"{0ddd015d-b06c-45d5-8c4c-f59713854639}\\PropertyBag"	; ƒsƒNƒ`ƒƒ
+; V_KEY =		"{35286a68-3c57-41a1-bbb1-0eae73d76c95}\\PropertyBag"	; ƒrƒfƒI
+; DL_KEY =	"{7d83ee9b-2244-4e70-b1f5-5393042af1e4}\\PropertyBag"	; ƒ_ƒEƒ“ƒ[ƒh
+; M_KEY =		"{a0c69a99-21c8-4671-8703-7934162fcf1d}\\PropertyBag"	; ƒ~ƒ…[ƒWƒbƒN
+; DOC_KEY =	"{f42ee2d3-909f-4907-8871-4c22fc0bf756}\\PropertyBag"	; ƒhƒLƒ…ƒƒ“ƒg
+; DES_KEY =	"{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}\\PropertyBag"	; ƒfƒXƒNƒgƒbƒv
+; D3_KEY =	"{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\\PropertyBag"	; 3D
+root64="HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\MyComputer\\NameSpace\\"
+root32="HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Explorer\\MyComputer\\NameSpace\\"
+d3oKey="{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}"
+desKey="{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}"
+docKey1="{A8CDFF1C-4878-43be-B5FD-F8091C1C60D0}"
+docKey2="{d3162b92-9365-467a-956b-92703aca08af}"
+dwnKey1="{374DE290-123F-4565-9164-39C4925E467B}"
+dwnKey2="{088e3905-0323-4b02-9826-5d99428e115f}"
+musKey1="{1CF1260C-4DD0-4ebb-811F-33C572699FDE}"
+musKey2="{3dfdf296-dbec-4fb4-81d1-6a3438bcf4de}"
+picKey1="{3ADD1653-EB32-4cb0-BBD7-DFA0ABB5ACCA}"
+picKey2="{24ad3ad4-a569-4530-98e1-ab02f9417aa8}"
+vidKey1="{A0953C92-50DC-43bf-BE83-3742FED03C9C}"
+vidKey2="{f86fa3ab-70d2-4fc7-9c99-fcbf05467f3a}"
 
 dim isVisible,N
-dim keyList,N
-keyList=P_KEY,V_KEY,DL_KEY,M_KEY,DOC_KEY,DES_KEY,D3_KEY
-dim keyLabel,N
-keyLabel="ƒsƒNƒ`ƒƒ","ƒrƒfƒI","ƒ_ƒEƒ“ƒ[ƒh","ƒ~ƒ…[ƒWƒbƒN","ƒhƒLƒ…ƒƒ“ƒg","ƒfƒXƒNƒgƒbƒv","3D ƒIƒuƒWƒFƒNƒg"
+dim keys,N+5
+keys=d3oKey, desKey, docKey1, dwnKey1, musKey1, picKey1, vidKey1, docKey2, dwnKey2, musKey2, picKey2, vidKey2
+;dim oldKeys,N : oldKeys=P_KEY,V_KEY,DL_KEY,M_KEY,DOC_KEY,DES_KEY,D3_KEY
+dim keyLabels,N
+keyLabels="3D ƒIƒuƒWƒFƒNƒg","ƒfƒXƒNƒgƒbƒv","ƒhƒLƒ…ƒƒ“ƒg","ƒ_ƒEƒ“ƒ[ƒh","ƒ~ƒ…[ƒWƒbƒN","ƒsƒNƒ`ƒƒ","ƒrƒfƒI"
 
 *load_keys
 	cls 1
-	mes "ƒŒƒWƒXƒgƒŠ‚Ì“Ç‚İæ‚è’†..."
-	logmes "\n===LOADING KEYS==="
-	foreach keyList
-		logmes "------"
+	mes "ƒŒƒWƒXƒgƒŠ‚Ì“Ç‚İæ‚è’†..." : logmes "\n===LOADING KEYS==="
 
-		sdim buf,32000
-		sdim ln,4096
-		pipeexec buf,"reg query "+ROOT+"\\"+keyList.cnt+" /reg:64"
-		if stat : dialog "—\Šú‚µ‚È‚¢ƒŒƒWƒXƒgƒŠEƒGƒ‰[‚ª”­¶‚µ‚Ü‚µ‚½B" : end
-		repeat
-			pipeget ln
-			if stat == 0 : break
-			wait 1
-		loop
-		logmes buf
-		if instr( buf , , "Hide" ) < 0 : isVisible.cnt=1 : else : isVisible.cnt=0
+	sdim buf,32000 : sdim ln,4096
+	pipeexec buf,"reg query " + root64 + " /reg:64"
+	if stat : dialog "—\Šú‚µ‚È‚¢ƒŒƒWƒXƒgƒŠEƒGƒ‰[‚ª”­¶‚µ‚Ü‚µ‚½B" : end
+	repeat
+		wait 1 : pipeget ln : if stat == 0 : break
+	loop
+	logmes buf
+
+	foreach keyLabels
+		logmes "------" ; set isVisible.cnt to 1 if each key is under root, otherwise 0
+		if instr( buf , , keys.cnt ) >= 0 : isVisible.cnt=1 : else : isVisible.cnt=0
 	loop
 
 *fresh_gui
 	cls 1
 	objsize CHK_W
-	foreach keyList
-		chkbox keyLabel.cnt,isVisible.cnt
+	foreach isVisible
+		chkbox keyLabels.cnt, isVisible.cnt
 	loop
-	mes "\nƒqƒ“ƒgFŠÇ—ÒŒ ŒÀ‚ª–³‚¢‚Æ\n³‚µ‚­“K—p‚³‚ê‚Ü‚¹‚ñB"
+	; mes "\nƒqƒ“ƒgFŠÇ—ÒŒ ŒÀ‚ª–³‚¢‚Æ\n³‚µ‚­“K—p‚³‚ê‚Ü‚¹‚ñB"
 
 	pos CHK_W,0
 	button "Ä“Ç‚İ‚İ", *load_keys
@@ -68,28 +79,45 @@ keyLabel="ƒsƒNƒ`ƒƒ","ƒrƒfƒI","ƒ_ƒEƒ“ƒ[ƒh","ƒ~ƒ…[ƒWƒbƒN","ƒhƒLƒ…ƒƒ“ƒg","ƒfƒXƒ
 	stop
 
 *apply
-	logmes "\n===APPLYING==="
-	foreach keyList
-		policy=""
-		; errlv="OKASHIMOCHI"
-		if isVisible.cnt == 0 : policy = "Hide" : else : policy = "Show"
+	cls 1 : mes "“K—p’†...‚¨‘Ò‚¿‚­‚¾‚³‚¢" : logmes "\n===APPLYING==="
+	foreach keyLabels
+		command=""
+		if isVisible.cnt == 0 : command = "DELETE " : else : command = "ADD "
 		
 		logmes "------"
-		sdim buf,32000
-		sdim ln,4096
-		pipeexec buf,"reg add "+ROOT+"\\"+keyList.cnt+" /v ThisPCPolicy /d "+ policy +" /f /reg:64"
+		sdim buf,32000 : sdim ln,4096
+		pipeexec buf,"REG " + command + root64 + keys.cnt + " /f /reg:64"
 		if stat : dialog "—\Šú‚µ‚È‚¢ƒŒƒWƒXƒgƒŠEƒGƒ‰[‚ª”­¶‚µ‚Ü‚µ‚½B" : goto *fresh_gui
 		repeat
-			pipeget ln
-			if stat==0 : break
-			wait 1
+			wait 1 : pipeget ln : if stat==0 : break
 		loop
-		; getenv errlv,"errorlevel"
-		; logmes errlv
 		logmes buf
-		if instr( buf , , "Hide" ) < 0 : isVisible.cnt=1 : else : isVisible.cnt=0
+		; WOW6432 ˆÈ‰º‚Ìİ’è
+		pipeexec buf,"REG " + command + root32 + keys.cnt + " /f /reg:64"
+		if stat : dialog "—\Šú‚µ‚È‚¢ƒŒƒWƒXƒgƒŠEƒGƒ‰[‚ª”­¶‚µ‚Ü‚µ‚½B" : goto *fresh_gui
+		repeat
+			wait 1 : pipeget ln : if stat==0 : break
+		loop
+		logmes buf
+
+		if cnt > 1 {
+			pipeexec buf,"REG " + command + root64 + keys.(cnt+5) + " /f /reg:64"
+			if stat : dialog "—\Šú‚µ‚È‚¢ƒŒƒWƒXƒgƒŠEƒGƒ‰[‚ª”­¶‚µ‚Ü‚µ‚½B" : goto *fresh_gui
+			repeat
+				wait 1 : pipeget ln : if stat==0 : break
+			loop
+			logmes buf
+			; WOW6432 ˆÈ‰º‚Ìİ’è
+			pipeexec buf,"REG " + command + root32 + keys.cnt + " /f /reg:64"
+			if stat : dialog "—\Šú‚µ‚È‚¢ƒŒƒWƒXƒgƒŠEƒGƒ‰[‚ª”­¶‚µ‚Ü‚µ‚½B" : goto *fresh_gui
+			repeat
+				wait 1 : pipeget ln : if stat==0 : break
+			loop
+			logmes buf
+		}
 	loop
 	dialog "•ÏX‚ğ“K—p‚µ‚Ü‚µ‚½B\n³‚µ‚­“K—p‚³‚ê‚Ä‚¢‚È‚¢ê‡‚ÍA\n‚±‚ÌƒAƒvƒŠ‚ğŠÇ—Ò‚Æ‚µ‚Ä‹N“®‚µ\nÄ“x“K—p‚µ‚Ä‚­‚¾‚³‚¢B",,APP_TITLE
+	goto *fresh_gui
 	stop
 
 *all_hide
