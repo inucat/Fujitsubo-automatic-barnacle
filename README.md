@@ -1,14 +1,12 @@
 # ふじつぼ Fujitsubo-automatic-barnacle
-Windows 10 で "PC" 内の個人フォルダの表示・非表示を切り替えるソフトです。<br>
-Toggle Show/Hide folders in "This PC" on Windows 10!<br>
+###### ダウンロードは右上の"Releases"から！
+"PC" や "ユーザフォルダ" の各種フォルダの表示・非表示を切り替えます。<br>
+Toggle Show/Hide folders in "This PC/User Folder" on Windows 10!<br>
 ![Example](./doc/fuji2.PNG)
 
 ---
 
 ## クイックガイド
-### ダウンロード
-GitHubページ（ここ）の右にある"Releases"からダウンロード可能です。
-
 ### 使い方
 1. `fujitsubo.exe`を**管理者として**実行する（レジストリ情報の取得に多少時間がかかります）。
 1. 非表示にしたいフォルダの**チェックを外す**（表示しておきたいフォルダのチェックはそのまま）。
@@ -19,12 +17,12 @@ GitHubページ（ここ）の右にある"Releases"からダウンロード可�
 
 ## 動作の仕組み
 レジストリの書き換えによって表示を切り替えています。<br>
-これは`HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\`以下のキーを`regedit.exe`で書き換えることと同じです。<br>
-<!-- ~~これは`HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions`以下の値を`regedit.exe`で書き換えることと同じです。~~<br> -->
+<!-- これは`HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\`以下のキーを`regedit.exe`で書き換えることと同じです。<br>
+~~これは`HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions`以下の値を`regedit.exe`で書き換えることと同じです。~~<br> -->
 よって万が一の時は手動で書き換えることもできます。
 
 ## 既知の問題点
-- レジストリの読み込みに時間がかかる。
+- 中確率でレジストリの読み込みに時間がかかる。
 
 ## 告知事項
 作者はこのソフトウェアに不具合のないことを保証しません。
@@ -38,7 +36,7 @@ GitHubページ（ここ）の右にある"Releases"からダウンロード可�
 ## 基本情報
 |**アプリ名**|ふじつぼ|
 |:---:|:---:|
-|**バージョン**|0.2.0|
+|**バージョン**|0.3.0|
 |**作者**|inucat|
 |**開発言語**|Hot Soup Processor 3|
 |**動作環境**|Windows 10 64bit版|
@@ -52,15 +50,18 @@ GitHubページ（ここ）の右にある"Releases"からダウンロード可�
 
 ## 今後の予定
 - 英語対応
-- ユーザーのフォルダから要らんやつを隠す
-- 常に管理者権限で実行する
-- 32bit 対応
+- 開発言語をVB,C++,C#に切り替えるかも（高速化・効率化のため）
+- UIの改良
 
 ## 変更履歴
-- 2021-03-03 v0.2.0 
+- 2021-03-03 v0.3.0
+    - **ユーザフォルダ下**の「リンク」「検索」など13個のフォルダ取扱いを追加！
+    - **32bit**に理論上は対応（動作確認はしてません）
+    - 権限の確認ダイアログを追加。
+- 2021-03-03 v0.2.0
     - ユーザフォルダ`%USERPROFILE%`から隠れないように仕様変更。
     - 仕様変更に伴い64bit OSのみの対応となる。
-- 2021-03-02 v0.1.0 
+- 2021-03-02 v0.1.0
     - 初版公開
 
 <!--
