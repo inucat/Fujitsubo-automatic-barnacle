@@ -23,19 +23,22 @@ APP_VER="v0.2.0"
 
 ; %UserProfile% reg keys
 upRoot = "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FolderDescriptions\\"
-upPic =	"{0ddd015d-b06c-45d5-8c4c-f59713854639}\\PropertyBag"	; ピクチャ
-upVid =	"{35286a68-3c57-41a1-bbb1-0eae73d76c95}\\PropertyBag"	; ビデオ
-upDwn =	"{7d83ee9b-2244-4e70-b1f5-5393042af1e4}\\PropertyBag"	; ダウンロード
-upMus =	"{a0c69a99-21c8-4671-8703-7934162fcf1d}\\PropertyBag"	; ミュージック
-upDoc =	"{f42ee2d3-909f-4907-8871-4c22fc0bf756}\\PropertyBag"	; ドキュメント
-upDes =	"{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}\\PropertyBag"	; デスクトップ
-up3do =	"{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\\PropertyBag"	; 3D
-; upCon = 
-; upFav = 
-; upLnk = 
-; upOne = 
-; upGam = 
-; upSea = 
+upRoot32 = "HKLM\\SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FolderDescriptions\\"
+upPic =	"{0ddd015d-b06c-45d5-8c4c-f59713854639}\\PropertyBag"	; Picture
+upVid =	"{35286a68-3c57-41a1-bbb1-0eae73d76c95}\\PropertyBag"	; Video
+upDwn =	"{7d83ee9b-2244-4e70-b1f5-5393042af1e4}\\PropertyBag"	; Download
+upMus =	"{a0c69a99-21c8-4671-8703-7934162fcf1d}\\PropertyBag"	; Music
+upDoc =	"{f42ee2d3-909f-4907-8871-4c22fc0bf756}\\PropertyBag"	; Documents
+up3do =	"{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\\PropertyBag"	; 3D Objects
+upCon = "{56784854-C6CB-462B-8169-88E350ACB882}\\PropertyBag"	; Contacts
+upLnk = "{bfb9d5e0-c6a9-404c-b2b2-ae6db6af4968}\\PropertyBag"	; Links
+upOne = "{A52BBA46-E9E1-435f-B3D9-28DAA648C0F6}\\PropertyBag"	; OneDrive
+upGam = "{4C5C32FF-BB9D-43b0-B5B4-2D72E54EAAA4}\\PropertyBag"	; Saved Games
+upSea = "{7d1d3a04-debb-4115-95cf-2f29da2920da}\\PropertyBag"	; Searches
+upFa1 = "{1777F761-68AD-4D8A-87BD-30B759FA33DD}\\PropertyBag"	; Favorites 1st key
+upFa2 = "{7CFBEFBC-DE1F-45AA-B843-A542AC536CC9}\\PropertyBag"	; Favorites 2nd key
+upDe1 =	"{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}\\PropertyBag"	; Desktop 1st key
+upDe2 =	"{754AC886-DF64-4CBA-86B5-F7FBF4FBCEF5}\\PropertyBag"	; Desktop 2nd key
 
 ; "This PC" reg keys
 root64="HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\MyComputer\\NameSpace\\"
@@ -54,31 +57,26 @@ vidKey1="{A0953C92-50DC-43bf-BE83-3742FED03C9C}"
 vidKey2="{f86fa3ab-70d2-4fc7-9c99-fcbf05467f3a}"
 
 dim isVisible,N
-dim keys,N+5
-keys=d3oKey, desKey, docKey1, dwnKey1, musKey1, picKey1, vidKey1, docKey2, dwnKey2, musKey2, picKey2, vidKey2
-dim keyLabels,N
-keyLabels="3D オブジェクト","デスクトップ","ドキュメント","ダウンロード","ミュージック","ピクチャ","ビデオ"
-; dim isVisibleUP,N_UP
-; dim upKeys,N_UP : upKeys=
+dim keys,N+5 : keys=d3oKey, desKey, docKey1, dwnKey1, musKey1, picKey1, vidKey1, docKey2, dwnKey2, musKey2, picKey2, vidKey2
+dim keyLabels,N : keyLabels="3D オブジェクト","デスクトップ","ドキュメント","ダウンロード","ミュージック","ピクチャ","ビデオ"
+dim upVisible,N_UP
+dim upKeys,N_UP : upKeys=upPic, upVid, upDwn, upMus, upDoc, up3do, upCon, upLnk, upOne, upGam, upSea, upFa1, upDe1, upFa2, upDe2 
+dim upLabels,N_UP : upLabels="ピクチャ","ビデオ","ダウンロード","ミュージック","ドキュメント","3D オブジェクト","アドレス帳","リンク","OneDrive","ゲーム","検索","お気に入り","デスクトップ"
 
-procArch="" : pa6432=""
-getenv procArch, "PROCESSOR_ARCHITECTURE"
-if procArch != "x86" { ; true 64bit Win.
-	osBit=procArch
-} else {;   procArch=="x86" --> is WOW64 or true 32bit Win?
-	getenv pa6432, "PROCESSOR_ARCHITEW6432"
-	osBit=pa6432 ;   32bit --> osBit="x86"
+; Detect Windows OS bit (x86 or not)
+osBit=""
+getenv osBit, "PROCESSOR_ARCHITECTURE"
+if osBit == "x86" {;   osBit=="x86" --> is WOW64 or true 32bit Win?
+	getenv osBit, "PROCESSOR_ARCHITEW6432" ;   32bit --> osBit="x86"
 } logmes osBit
 
 *load_keys
-	cls 1
-	mes "レジストリの読み取り中..." : logmes "\n===LOADING KEYS==="
+	screen ,640,540 : cls 1 : mes "レジストリの読み取り中..." : logmes "\n===LOADING KEYS==="
 
 	sdim buf,32000 : sdim ln,4096;"reg query " + root64 + " /reg:64"
 	pipeexec buf,"reg query " + root64 + " /reg:64"
 	if stat : dialog "Could not access registry!",1 : end
 	repeat
-		; wait 1 : 
 		pipeget ln : if stat == 0 : break
 	loop
 	logmes buf
@@ -87,18 +85,38 @@ if procArch != "x86" { ; true 64bit Win.
 		if instr( buf , , keys.cnt ) >= 0 : isVisible.cnt=1 : else : isVisible.cnt=0
 	loop
 
+	; Load %USERPROFILE% status
+	; sdim buf,32000 : sdim ln,4096
+	foreach upLabels ; Set isVisible.cnt to 1 if each key is under root, otherwise 0
+		pipeexec buf,"reg query " +upRoot+upKeys+ "\\PropertyBag /s /reg:64" : if stat : dialog "Could not access registry!",1 : end
+		repeat
+			pipeget ln : if stat == 0 : break
+		loop
+		logmes buf
+		if instr( buf , , "Hide" ) < 0 : upVisible.cnt=1 : else : upVisible.cnt=0
+	loop
+
 *fresh_gui
 	cls 1
 	objsize CHK_W
+	mes "PC:" ; This PC
 	foreach isVisible
 		chkbox keyLabels.cnt, isVisible.cnt
+	loop
+	mes "\nユーザフォルダ:" ; %UserProfile%
+	foreach upVisible
+		chkbox upLabels.cnt, upVisible.cnt
 	loop
 	; mes "\nヒント：管理者権限が無いと\n正しく適用されません。"
 
 	pos CHK_W,0
 	button "再読み込み", *load_keys
-	button "すべて隠す", *all_hide
-	button "すべて現す", *all_show
+	mes
+	button "PC:すべて隠す", *all_hide
+	button "PC:すべて現す", *all_show
+	mes
+	button "UP:すべて隠す", *all_hide_up
+	button "UP:すべて現す", *all_show_up
 	mes
 	button "変更を適用", *apply
 	mes
@@ -106,7 +124,7 @@ if procArch != "x86" { ; true 64bit Win.
 	stop
 
 *apply
-	cls 1 : mes "適用中...お待ちください" : logmes "\n===APPLYING==="
+	cls 1 : mes "適用中...お待ちください" ; Applying message
 	foreach keyLabels
 		command=""
 		if isVisible.cnt == 0 : command = "DELETE " : else : command = "ADD "
@@ -116,7 +134,6 @@ if procArch != "x86" { ; true 64bit Win.
 		pipeexec buf,"REG " + command + root64 + keys.cnt + " /f /reg:64"
 		if stat : dialog "予期しないレジストリ・エラーが発生しました。" : goto *fresh_gui
 		repeat
-			; wait 1 : 
 			pipeget ln : if stat==0 : break
 		loop
 		logmes buf
@@ -125,17 +142,14 @@ if procArch != "x86" { ; true 64bit Win.
 			pipeexec buf,"REG " + command + root32 + keys.cnt + " /f /reg:64"
 			if stat : dialog "予期しないレジストリ・エラーが発生しました。" : goto *fresh_gui
 			repeat
-				; wait 1 : 
 				pipeget ln : if stat==0 : break
 			loop
 			logmes buf
 		}
-
 		if cnt > 1 {
 			pipeexec buf,"REG " + command + root64 + keys.(cnt+5) + " /f /reg:64"
 			if stat : dialog "予期しないレジストリ・エラーが発生しました。" : goto *fresh_gui
 			repeat
-				; wait 1 : 
 				pipeget ln : if stat==0 : break
 			loop
 			logmes buf
@@ -144,16 +158,45 @@ if procArch != "x86" { ; true 64bit Win.
 				pipeexec buf,"REG " + command + root32 + keys.cnt + " /f /reg:64"
 				if stat : dialog "予期しないレジストリ・エラーが発生しました。" : goto *fresh_gui
 				repeat
-					; wait 1 : 
 					pipeget ln : if stat==0 : break
 				loop
 				logmes buf
 			}
 		}
 	loop
+
+	; %UserProfile% application
+	foreach upVisible
+		if upVisible == 1 : policy="Show" : else : policy="Hide"
+		pipeexec buf,"REG ADD " + upRoot+upKeys.cnt + " /v ThisPCPolicy /d " +policy+ " /f /reg:64"
+		if stat : dialog "予期しないレジストリ・エラーが発生しました。" : goto *fresh_gui
+		repeat
+			pipeget ln : if stat==0 : break
+		loop
+		if osBit != "x86" {
+			pipeexec buf,"REG ADD " + upRoot32+upKeys.cnt + " /v ThisPCPolicy /d " +policy+ " /f /reg:64"
+			if stat : dialog "予期しないレジストリ・エラーが発生しました。" : goto *fresh_gui
+			repeat
+				pipeget ln : if stat==0 : break
+			loop
+		}
+		if cnt > 10 {
+			pipeexec buf,"REG ADD " + upRoot+upKeys.(cnt+2) + " /v ThisPCPolicy /d " +policy+ " /f /reg:64"
+			if stat : dialog "予期しないレジストリ・エラーが発生しました。" : goto *fresh_gui
+			repeat
+				pipeget ln : if stat==0 : break
+			loop
+			if osBit != "x86" {
+				pipeexec buf,"REG ADD " + upRoot32+upKeys.(cnt+2) + " /v ThisPCPolicy /d " +policy+ " /f /reg:64"
+				if stat : dialog "予期しないレジストリ・エラーが発生しました。" : goto *fresh_gui
+				repeat
+					pipeget ln : if stat==0 : break
+				loop
+			}
+		}
+	loop
 	dialog "変更を適用しました。\n正しく適用されていない場合は、\n再起動してください。",,APP_TITLE
 	goto *fresh_gui
-	stop
 
 *all_hide
 	foreach isVisible
@@ -164,6 +207,18 @@ if procArch != "x86" { ; true 64bit Win.
 *all_show
 	foreach isVisible
 		isVisible.cnt=1
+	loop
+	goto *fresh_gui
+
+*all_show_up
+	foreach upVisible
+		upVisible.cnt=0
+	loop
+	goto *fresh_gui
+
+*all_hide_up
+	foreach upVisible
+		upVisible.cnt=0
 	loop
 	goto *fresh_gui
 
