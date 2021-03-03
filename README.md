@@ -16,9 +16,7 @@ Toggle Show/Hide folders in "This PC/User Folder" on Windows 10!<br>
 すべてのフォルダにチェックを入れて、「変更を適用」します。
 
 ## 動作の仕組み
-レジストリの書き換えによって表示を切り替えています。<br>
-<!-- これは`HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\`以下のキーを`regedit.exe`で書き換えることと同じです。<br>
-~~これは`HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions`以下の値を`regedit.exe`で書き換えることと同じです。~~<br> -->
+レジストリの書き換えによって表示を切り替えています。
 よって万が一の時は手動で書き換えることもできます。
 
 ## 既知の問題点
