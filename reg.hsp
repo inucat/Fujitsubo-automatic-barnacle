@@ -1,26 +1,43 @@
 ; ふじつぼ Automatic-Fujitsubo
 ; (C) 2021 inucat. Under GNU GPL.
-APP_TITLE="ふじつぼ Fujitsubo"
-title APP_TITLE
-APP_VER="0.2.0"
+
+; Config the UI language.
+#uselib "kernel32.dll"
+#cfunc GetUserDefaultUILanguage "GetUserDefaultUILanguage"
+langcode = GetUserDefaultUILanguage();
+if langcode == 0x0411 : lang="jp" : else : lang="en"
+
+APP_TITLE="ふじつぼ Fujitsubo" : title APP_TITLE
+APP_VER="v0.2.0"
 
 #packopt	name	"Fujitsubo"
-#packopt	manifest	"fujitsubo.exe.manifest"
+#packopt	manifest	"admin.manifest"
+#pack "admin.manifest"
 #include	"hspext.as"
 #include	"hspinet.as"
 #cmpopt		varinit 1	; 未初期化の変数参照をエラーにする
 
 #const N 7				; 設定可能なフォルダは7個
+#const N_UP 13			; %UserProfile% の13個のフォルダ
 #const CHK_W 128		; チェックボックス・ボタンの幅
 
-; ROOT = "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FolderDescriptions"
-; P_KEY =		"{0ddd015d-b06c-45d5-8c4c-f59713854639}\\PropertyBag"	; ピクチャ
-; V_KEY =		"{35286a68-3c57-41a1-bbb1-0eae73d76c95}\\PropertyBag"	; ビデオ
-; DL_KEY =	"{7d83ee9b-2244-4e70-b1f5-5393042af1e4}\\PropertyBag"	; ダウンロード
-; M_KEY =		"{a0c69a99-21c8-4671-8703-7934162fcf1d}\\PropertyBag"	; ミュージック
-; DOC_KEY =	"{f42ee2d3-909f-4907-8871-4c22fc0bf756}\\PropertyBag"	; ドキュメント
-; DES_KEY =	"{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}\\PropertyBag"	; デスクトップ
-; D3_KEY =	"{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\\PropertyBag"	; 3D
+; %UserProfile% reg keys
+upRoot = "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FolderDescriptions\\"
+upPic =	"{0ddd015d-b06c-45d5-8c4c-f59713854639}\\PropertyBag"	; ピクチャ
+upVid =	"{35286a68-3c57-41a1-bbb1-0eae73d76c95}\\PropertyBag"	; ビデオ
+upDwn =	"{7d83ee9b-2244-4e70-b1f5-5393042af1e4}\\PropertyBag"	; ダウンロード
+upMus =	"{a0c69a99-21c8-4671-8703-7934162fcf1d}\\PropertyBag"	; ミュージック
+upDoc =	"{f42ee2d3-909f-4907-8871-4c22fc0bf756}\\PropertyBag"	; ドキュメント
+upDes =	"{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}\\PropertyBag"	; デスクトップ
+up3do =	"{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\\PropertyBag"	; 3D
+; upCon = 
+; upFav = 
+; upLnk = 
+; upOne = 
+; upGam = 
+; upSea = 
+
+; "This PC" reg keys
 root64="HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\MyComputer\\NameSpace\\"
 root32="HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Explorer\\MyComputer\\NameSpace\\"
 d3oKey="{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}"
@@ -39,24 +56,34 @@ vidKey2="{f86fa3ab-70d2-4fc7-9c99-fcbf05467f3a}"
 dim isVisible,N
 dim keys,N+5
 keys=d3oKey, desKey, docKey1, dwnKey1, musKey1, picKey1, vidKey1, docKey2, dwnKey2, musKey2, picKey2, vidKey2
-;dim oldKeys,N : oldKeys=P_KEY,V_KEY,DL_KEY,M_KEY,DOC_KEY,DES_KEY,D3_KEY
 dim keyLabels,N
 keyLabels="3D オブジェクト","デスクトップ","ドキュメント","ダウンロード","ミュージック","ピクチャ","ビデオ"
+; dim isVisibleUP,N_UP
+; dim upKeys,N_UP : upKeys=
+
+procArch="" : pa6432=""
+getenv procArch, "PROCESSOR_ARCHITECTURE"
+if procArch != "x86" { ; true 64bit Win.
+	osBit=procArch
+} else {;   procArch=="x86" --> is WOW64 or true 32bit Win?
+	getenv pa6432, "PROCESSOR_ARCHITEW6432"
+	osBit=pa6432 ;   32bit --> osBit="x86"
+} logmes osBit
 
 *load_keys
 	cls 1
 	mes "レジストリの読み取り中..." : logmes "\n===LOADING KEYS==="
 
-	sdim buf,32000 : sdim ln,4096
+	sdim buf,32000 : sdim ln,4096;"reg query " + root64 + " /reg:64"
 	pipeexec buf,"reg query " + root64 + " /reg:64"
-	if stat : dialog "予期しないレジストリ・エラーが発生しました。" : end
+	if stat : dialog "Could not access registry!",1 : end
 	repeat
-		wait 1 : pipeget ln : if stat == 0 : break
+		; wait 1 : 
+		pipeget ln : if stat == 0 : break
 	loop
 	logmes buf
 
-	foreach keyLabels
-		logmes "------" ; set isVisible.cnt to 1 if each key is under root, otherwise 0
+	foreach keyLabels ; Set isVisible.cnt to 1 if each key is under root, otherwise 0
 		if instr( buf , , keys.cnt ) >= 0 : isVisible.cnt=1 : else : isVisible.cnt=0
 	loop
 
@@ -89,34 +116,42 @@ keyLabels="3D オブジェクト","デスクトップ","ドキュメント","ダウンロード","ミュー
 		pipeexec buf,"REG " + command + root64 + keys.cnt + " /f /reg:64"
 		if stat : dialog "予期しないレジストリ・エラーが発生しました。" : goto *fresh_gui
 		repeat
-			wait 1 : pipeget ln : if stat==0 : break
+			; wait 1 : 
+			pipeget ln : if stat==0 : break
 		loop
 		logmes buf
 		; WOW6432 以下の設定
-		pipeexec buf,"REG " + command + root32 + keys.cnt + " /f /reg:64"
-		if stat : dialog "予期しないレジストリ・エラーが発生しました。" : goto *fresh_gui
-		repeat
-			wait 1 : pipeget ln : if stat==0 : break
-		loop
-		logmes buf
+		if osBit != "x86" {
+			pipeexec buf,"REG " + command + root32 + keys.cnt + " /f /reg:64"
+			if stat : dialog "予期しないレジストリ・エラーが発生しました。" : goto *fresh_gui
+			repeat
+				; wait 1 : 
+				pipeget ln : if stat==0 : break
+			loop
+			logmes buf
+		}
 
 		if cnt > 1 {
 			pipeexec buf,"REG " + command + root64 + keys.(cnt+5) + " /f /reg:64"
 			if stat : dialog "予期しないレジストリ・エラーが発生しました。" : goto *fresh_gui
 			repeat
-				wait 1 : pipeget ln : if stat==0 : break
+				; wait 1 : 
+				pipeget ln : if stat==0 : break
 			loop
 			logmes buf
-			; WOW6432 以下の設定
-			pipeexec buf,"REG " + command + root32 + keys.cnt + " /f /reg:64"
-			if stat : dialog "予期しないレジストリ・エラーが発生しました。" : goto *fresh_gui
-			repeat
-				wait 1 : pipeget ln : if stat==0 : break
-			loop
-			logmes buf
+			; WOW6432 以下の設定				
+			if osBit != "x86" {
+				pipeexec buf,"REG " + command + root32 + keys.cnt + " /f /reg:64"
+				if stat : dialog "予期しないレジストリ・エラーが発生しました。" : goto *fresh_gui
+				repeat
+					; wait 1 : 
+					pipeget ln : if stat==0 : break
+				loop
+				logmes buf
+			}
 		}
 	loop
-	dialog "変更を適用しました。\n正しく適用されていない場合は、\nこのアプリを管理者として起動し\n再度適用してください。",,APP_TITLE
+	dialog "変更を適用しました。\n正しく適用されていない場合は、\n再起動してください。",,APP_TITLE
 	goto *fresh_gui
 	stop
 
@@ -133,5 +168,5 @@ keyLabels="3D オブジェクト","デスクトップ","ドキュメント","ダウンロード","ミュー
 	goto *fresh_gui
 
 *about
-	dialog APP_TITLE + "\nVER. "+ APP_VER +"\n(C) 2021 inucat\n\n詳細・使い方はREADMEを参照。",,APP_TITLE
+	dialog APP_TITLE +"\n"+ APP_VER +"\n(C) 2021 inucat\n\n詳細・使い方はREADMEを参照。",,APP_TITLE
 	stop

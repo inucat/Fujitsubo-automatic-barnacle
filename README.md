@@ -20,13 +20,10 @@ GitHubページ（ここ）の右にある"Releases"からダウンロード可�
 ## 動作の仕組み
 レジストリの書き換えによって表示を切り替えています。<br>
 これは`HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\`以下のキーを`regedit.exe`で書き換えることと同じです。<br>
-~~これは`HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions`以下の値を`regedit.exe`で書き換えることと同じです。~~<br>
+<!-- ~~これは`HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions`以下の値を`regedit.exe`で書き換えることと同じです。~~<br> -->
 よって万が一の時は手動で書き換えることもできます。
 
 ## 既知の問題点
-<!-- - "PC" だけでなくユーザフォルダ`%USERPROFILE%`からも隠れてしまう（かなり致命的ですが仕様なんです……）。
-    - → 回避策:`%HOMEPATH%`からアクセスする。
- -->
 - レジストリの読み込みに時間がかかる。
 
 ## 告知事項
@@ -51,11 +48,20 @@ GitHubページ（ここ）の右にある"Releases"からダウンロード可�
 ## 窓口
 不具合報告などは下記まで。
 - Twitter: @inucat4
-- Github: inucat
+- Github: inucatのIssue
+
+## 今後の予定
+- 英語対応
+- ユーザーのフォルダから要らんやつを隠す
+- 常に管理者権限で実行する
+- 32bit 対応
 
 ## 変更履歴
-- 2021-03-03 v0.2.0 ユーザフォルダ`%USERPROFILE%`からは隠れないように仕様変更。
-- 2021-03-02 v0.1.0 初版公開
+- 2021-03-03 v0.2.0 
+    - ユーザフォルダ`%USERPROFILE%`から隠れないように仕様変更。
+    - 仕様変更に伴い64bit OSのみの対応となる。
+- 2021-03-02 v0.1.0 
+    - 初版公開
 
 <!--
 ---

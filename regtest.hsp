@@ -12,3 +12,56 @@ mes pa6432 ;   NOT 64bit Windows: x86
     else            --> pa6432 == x86 | pa6432 == "" --> 32bitOS
                         else                         --> 64bitOS   
 */
+
+#uselib "kernel32.dll"
+#cfunc GetUserDefaultUILanguage "GetUserDefaultUILanguage"
+langcode = GetUserDefaultUILanguage();
+if langcode == 0x0411 : logmes "日本語" : else : logmes "Other"
+
+#module lang
+#uselib "kernel32.dll"
+#define GetLocaleInfo GetLocaleInfoA
+#func GetLocaleInfoA "GetLocaleInfoA" sptr,sptr,sptr,sptr
+#func GetLocaleInfoW "GetLocaleInfoW" wptr,wptr,wptr,wptr
+
+#deffunc langInit 
+	sdim lpLCData,64
+	GetLocaleInfo $800/*LOCALE_USER_DEFAULT*/, $1/*LOCALE_ILANGUAGE*/, varptr(lpLCData), 64
+	return
+
+// a=英語（アメリカ）, e=英語（イギリス）, t=中国語（台湾）, c=中国語（中華人民共和国）, k=韓国語
+#define q if word=
+#define a if(lpLCData= 0x0409 ){ return
+#define e if(lpLCData= 0x0809 ){ return
+#define t if(lpLCData= 0x0404 ){ return
+#define c if(lpLCData= 0x0804 ){ return
+#define k if(lpLCData= 0x0412 ){ return
+#define _ }else:
+
+// ここに多言語対応したい単語(文字列)を登録する。
+// ・変換前(日本語)を q"": で括り、他言語を a""_ 等で括ります。 詳細は上記ソースを参照ください。
+// ・いっぱい書き換えるため、簡単な表記に出来るようにしているだけです。
+#defcfunc w str word
+	q"開く" : 		a"OPEN"_	c"打?"_	e"Open"_	k"??"_
+	q"閉じる" : 	a"CLOSE"_	c"關閉"_	e"Close"_	k"??"_
+	q"開始する" : 	a"START"_	c"開工"_	e"Start"_	k"???"_
+	q"終了する" : 	a"FINISH"_	c"終止"_	e"Finish"_	k"?"_
+	return word
+#global
+langInit
+//
+//  ↑ ここまでモジュール
+//
+
+#include "hsp3utf.as"
+
+// ↓を変更して、強制的に他の言語になったつもりにしてみる
+lpLCData@lang = 0x0409
+
+mes "<< "+w("開く")+" >>"
+mes ">> "+w("閉じる")+" <<"
+mes "-- "+w("開始する")+" ->"
+mes "xx "+w("終了する")+" xx"
+
+#defcfunc i18n str word
+	
