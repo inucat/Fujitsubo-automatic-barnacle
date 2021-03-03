@@ -1,18 +1,8 @@
 ; ふじつぼ Automatic-Fujitsubo
 ; (C) 2021 inucat. Under GNU GPL.
-
-; Config the UI language.
-#uselib "kernel32.dll"
-#cfunc GetUserDefaultUILanguage "GetUserDefaultUILanguage"
-langcode = GetUserDefaultUILanguage();
-if langcode == 0x0411 : lang="jp" : else : lang="en"
-
-APP_TITLE="ふじつぼ Fujitsubo" : title APP_TITLE
-APP_VER="v0.2.0"
-
-#packopt	name	"Fujitsubo"
-#packopt	manifest	"admin.manifest"
-#pack "admin.manifest"
+#packopt name "Fujitsubo"
+; #packopt manifest "fujitsubo.exe.manifest"
+; #pack "fujitsubo.exe.manifest"
 #include	"hspext.as"
 #include	"hspinet.as"
 #cmpopt		varinit 1	; 未初期化の変数参照をエラーにする
@@ -20,6 +10,17 @@ APP_VER="v0.2.0"
 #const N 7				; 設定可能なフォルダは7個
 #const N_UP 13			; %UserProfile% の13個のフォルダ
 #const CHK_W 128		; チェックボックス・ボタンの幅
+
+#uselib "kernel32.dll"
+#cfunc GetUserDefaultUILanguage "GetUserDefaultUILanguage"
+
+; Config the UI language.
+langcode = GetUserDefaultUILanguage();
+if langcode == 0x0411 : lang="jp" : else : lang="en"
+
+APP_TITLE="ふじつぼ Fujitsubo" : title APP_TITLE
+APP_VER="v0.3.0"
+
 
 ; %UserProfile% reg keys
 upRoot = "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FolderDescriptions\\"
@@ -70,10 +71,21 @@ if osBit == "x86" {;   osBit=="x86" --> is WOW64 or true 32bit Win?
 	getenv osBit, "PROCESSOR_ARCHITEW6432" ;   32bit --> osBit="x86"
 } logmes osBit
 
+; Check Admin Privilege
+#uselib "shell32.dll"
+#cfunc IsUserAnAdmin  "IsUserAnAdmin"
+
+if IsUserAnAdmin(){
+	logmes "Good."
+}else{
+	dialog "管理者権限がありません！\n正しく機能するために「管理者として実行」してください。",1,APP_TITLE
+	end
+}
+
 *load_keys
 	screen ,640,540 : cls 1 : mes "レジストリの読み取り中..." : logmes "\n===LOADING KEYS==="
 
-	sdim buf,32000 : sdim ln,4096;"reg query " + root64 + " /reg:64"
+	sdim buf,32000 : sdim ln,4096
 	pipeexec buf,"reg query " + root64 + " /reg:64"
 	if stat : dialog "Could not access registry!",1 : end
 	repeat
@@ -88,7 +100,8 @@ if osBit == "x86" {;   osBit=="x86" --> is WOW64 or true 32bit Win?
 	; Load %USERPROFILE% status
 	; sdim buf,32000 : sdim ln,4096
 	foreach upLabels ; Set isVisible.cnt to 1 if each key is under root, otherwise 0
-		pipeexec buf,"reg query " +upRoot+upKeys+ "\\PropertyBag /s /reg:64" : if stat : dialog "Could not access registry!",1 : end
+		buf="" ; Clear pipeline buffer 
+		pipeexec buf,"reg query " +upRoot+upKeys.cnt+ " /s /reg:64" : if stat : dialog "Could not access registry!",1 : end
 		repeat
 			pipeget ln : if stat == 0 : break
 		loop
@@ -107,36 +120,33 @@ if osBit == "x86" {;   osBit=="x86" --> is WOW64 or true 32bit Win?
 	foreach upVisible
 		chkbox upLabels.cnt, upVisible.cnt
 	loop
-	; mes "\nヒント：管理者権限が無いと\n正しく適用されません。"
 
 	pos CHK_W,0
-	button "再読み込み", *load_keys
-	mes
-	button "PC:すべて隠す", *all_hide
-	button "PC:すべて現す", *all_show
-	mes
-	button "UP:すべて隠す", *all_hide_up
-	button "UP:すべて現す", *all_show_up
-	mes
-	button "変更を適用", *apply
-	mes
-	button "このアプリについて", *about
+	mes : button "再読み込み", *load_keys : mes
+	mes "PC のフォルダ："
+	button "すべて隠す", *all_hide
+	button "すべて現す", *all_show
+	mes : mes "ユーザーのフォルダ："
+	button "すべて隠す", *all_hide_up
+	button "すべて現す", *all_show_up
+	mes : mes : mes : button "変更を適用", *apply
+	mes : button "このアプリについて", *about
 	stop
 
 *apply
-	cls 1 : mes "適用中...お待ちください" ; Applying message
+	cls 1 : mes "適用中...お待ちください" : logmes "===APPLYING==="; Applying message
 	foreach keyLabels
 		command=""
 		if isVisible.cnt == 0 : command = "DELETE " : else : command = "ADD "
 		
-		logmes "------"
+		; logmes "------"
 		sdim buf,32000 : sdim ln,4096
 		pipeexec buf,"REG " + command + root64 + keys.cnt + " /f /reg:64"
 		if stat : dialog "予期しないレジストリ・エラーが発生しました。" : goto *fresh_gui
 		repeat
 			pipeget ln : if stat==0 : break
 		loop
-		logmes buf
+		; logmes buf
 		; WOW6432 以下の設定
 		if osBit != "x86" {
 			pipeexec buf,"REG " + command + root32 + keys.cnt + " /f /reg:64"
@@ -144,7 +154,7 @@ if osBit == "x86" {;   osBit=="x86" --> is WOW64 or true 32bit Win?
 			repeat
 				pipeget ln : if stat==0 : break
 			loop
-			logmes buf
+			; logmes buf
 		}
 		if cnt > 1 {
 			pipeexec buf,"REG " + command + root64 + keys.(cnt+5) + " /f /reg:64"
@@ -152,7 +162,7 @@ if osBit == "x86" {;   osBit=="x86" --> is WOW64 or true 32bit Win?
 			repeat
 				pipeget ln : if stat==0 : break
 			loop
-			logmes buf
+			; logmes buf
 			; WOW6432 以下の設定				
 			if osBit != "x86" {
 				pipeexec buf,"REG " + command + root32 + keys.cnt + " /f /reg:64"
@@ -160,14 +170,14 @@ if osBit == "x86" {;   osBit=="x86" --> is WOW64 or true 32bit Win?
 				repeat
 					pipeget ln : if stat==0 : break
 				loop
-				logmes buf
+				; logmes buf
 			}
 		}
 	loop
 
 	; %UserProfile% application
 	foreach upVisible
-		if upVisible == 1 : policy="Show" : else : policy="Hide"
+		if upVisible.cnt == 1 : policy="Show" : else : policy="Hide"
 		pipeexec buf,"REG ADD " + upRoot+upKeys.cnt + " /v ThisPCPolicy /d " +policy+ " /f /reg:64"
 		if stat : dialog "予期しないレジストリ・エラーが発生しました。" : goto *fresh_gui
 		repeat
@@ -194,8 +204,9 @@ if osBit == "x86" {;   osBit=="x86" --> is WOW64 or true 32bit Win?
 				loop
 			}
 		}
+		; buf="" : ln="" ; Clear pipeline buffer 
 	loop
-	dialog "変更を適用しました。\n正しく適用されていない場合は、\n再起動してください。",,APP_TITLE
+	dialog "変更を適用しました。\n正しく適用されていない場合は、\nPCを再起動してください。",,APP_TITLE
 	goto *fresh_gui
 
 *all_hide
@@ -212,7 +223,7 @@ if osBit == "x86" {;   osBit=="x86" --> is WOW64 or true 32bit Win?
 
 *all_show_up
 	foreach upVisible
-		upVisible.cnt=0
+		upVisible.cnt=1
 	loop
 	goto *fresh_gui
 
