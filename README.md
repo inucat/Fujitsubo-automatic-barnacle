@@ -66,7 +66,7 @@ Toggle Show/Hide folders in "This PC/User Folder" on Windows 10!<br>
 
 ---
 
-##### (If the English description has any conflicts with the original Japanese one, the latter is correct.)
+##### (If the English description has any conflicts with the original Japanese one, the Japanese one is correct.)
 
 ## Quick Start Guide
 ### Usage
