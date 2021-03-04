@@ -1,5 +1,5 @@
 # ふじつぼ Fujitsubo-automatic-barnacle
-###### ダウンロードは右上の"Releases"から！
+## ダウンロードは右上の"Releases"から！
 "PC" や "ユーザフォルダ" の各種フォルダの表示・非表示を切り替えます。<br>
 Toggle Show/Hide folders in "This PC/User Folder" on Windows 10!<br>
 ![Example](./doc/fuji2.PNG)
