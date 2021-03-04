@@ -3,22 +3,16 @@
 #packopt name "Fujitsubo"
 ; #packopt manifest "fujitsubo.exe.manifest"
 ; #pack "fujitsubo.exe.manifest"
-#include	"hspext.as"
-#include	"hspinet.as"
-#cmpopt		varinit 1	; 未初期化の変数参照をエラーにする
+#include "hspext.as"
+#include "hspinet.as"
+#include "regtest.hsp"
+#cmpopt	varinit 1	; 未初期化の変数参照をエラーにする
 
 #const N 7				; 設定可能なフォルダは7個
 #const N_UP 13			; %UserProfile% の13個のフォルダ
 #const CHK_W 128		; チェックボックス・ボタンの幅
 
-#uselib "kernel32.dll"
-#cfunc GetUserDefaultUILanguage "GetUserDefaultUILanguage"
-
-; Config the UI language.
-langcode = GetUserDefaultUILanguage();
-if langcode == 0x0411 : lang="jp" : else : lang="en"
-
-APP_TITLE="ふじつぼ Fujitsubo" : title APP_TITLE
+APP_TITLE=i18n("appTitle") : title APP_TITLE
 APP_VER="v0.3.0"
 
 
@@ -59,10 +53,10 @@ vidKey2="{f86fa3ab-70d2-4fc7-9c99-fcbf05467f3a}"
 
 dim isVisible,N
 dim keys,N+5 : keys=d3oKey, desKey, docKey1, dwnKey1, musKey1, picKey1, vidKey1, docKey2, dwnKey2, musKey2, picKey2, vidKey2
-dim keyLabels,N : keyLabels="3D オブジェクト","デスクトップ","ドキュメント","ダウンロード","ミュージック","ピクチャ","ビデオ"
+dim keyLabels,N : keyLabels=i18n("3D Object"),i18n("Desktop"),i18n("Documents"),i18n("Downloads"),i18n("Music"),i18n("Pictures"),i18n("Video")
 dim upVisible,N_UP
-dim upKeys,N_UP : upKeys=upPic, upVid, upDwn, upMus, upDoc, up3do, upCon, upLnk, upOne, upGam, upSea, upFa1, upDe1, upFa2, upDe2 
-dim upLabels,N_UP : upLabels="ピクチャ","ビデオ","ダウンロード","ミュージック","ドキュメント","3D オブジェクト","アドレス帳","リンク","OneDrive","ゲーム","検索","お気に入り","デスクトップ"
+dim upKeys,N_UP : upKeys=up3do, upDoc, upDwn, upMus, upPic, upVid, upCon, upLnk, upOne, upGam, upSea, upFa1, upDe1, upFa2, upDe2 
+dim upLabels,N_UP : upLabels=i18n("3D Object"),i18n("Documents"),i18n("Downloads"),i18n("Music"),i18n("Pictures"),i18n("Video"),i18n("Contacts"),i18n("Links"),i18n("OneDrive"),i18n("Saved Games"),i18n("Searches"),i18n("Favorites"),i18n("Desktop")
 
 ; Detect Windows OS bit (x86 or not)
 osBit=""
@@ -78,16 +72,16 @@ if osBit == "x86" {;   osBit=="x86" --> is WOW64 or true 32bit Win?
 if IsUserAnAdmin(){
 	logmes "Good."
 }else{
-	dialog "管理者権限がありません！\n正しく機能するために「管理者として実行」してください。",1,APP_TITLE
+	dialog i18n("adminDialog"),1,APP_TITLE
 	end
 }
 
 *load_keys
-	screen ,640,540 : cls 1 : mes "レジストリの読み取り中..." : logmes "\n===LOADING KEYS==="
+	screen ,640,540 : cls 1 : mes i18n("loadReg") : logmes "\n===LOADING KEYS==="
 
 	sdim buf,32000 : sdim ln,4096
 	pipeexec buf,"reg query " + root64 + " /reg:64"
-	if stat : dialog "Could not access registry!",1 : end
+	if stat : dialog i18n("critical"),1 : end
 	repeat
 		pipeget ln : if stat == 0 : break
 	loop
@@ -101,7 +95,7 @@ if IsUserAnAdmin(){
 	; sdim buf,32000 : sdim ln,4096
 	foreach upLabels ; Set isVisible.cnt to 1 if each key is under root, otherwise 0
 		buf="" ; Clear pipeline buffer 
-		pipeexec buf,"reg query " +upRoot+upKeys.cnt+ " /s /reg:64" : if stat : dialog "Could not access registry!",1 : end
+		pipeexec buf,"reg query " +upRoot+upKeys.cnt+ " /s /reg:64" : if stat : dialog i18n("critical"),1 : end
 		repeat
 			pipeget ln : if stat == 0 : break
 		loop
@@ -112,25 +106,27 @@ if IsUserAnAdmin(){
 *fresh_gui
 	cls 1
 	objsize CHK_W
-	mes "PC:" ; This PC
+	mes i18n("PC") ; This PC
+	button i18n("Hideall"), *all_hide
+	button i18n("Showall"), *all_show
 	foreach isVisible
 		chkbox keyLabels.cnt, isVisible.cnt
 	loop
-	mes "\nユーザフォルダ:" ; %UserProfile%
+	
+	pos CHK_W,0
+	mes i18n("user's") ; %UserProfile%
+	button i18n("Hideall"), *all_hide_up
+	button i18n("Showall"), *all_show_up
 	foreach upVisible
 		chkbox upLabels.cnt, upVisible.cnt
 	loop
 
-	pos CHK_W,0
-	mes : button "再読み込み", *load_keys : mes
-	mes "PC のフォルダ："
-	button "すべて隠す", *all_hide
-	button "すべて現す", *all_show
-	mes : mes "ユーザーのフォルダ："
-	button "すべて隠す", *all_hide_up
-	button "すべて現す", *all_show_up
-	mes : mes : mes : button "変更を適用", *apply
-	mes : button "このアプリについて", *about
+	pos CHK_W*2,0
+	mes : button i18n("Reload"), *load_keys : mes
+	mes : mes : mes : button i18n("Apply"), *apply
+	mes : button i18n("About"), *about
+
+	pos 0,400 : mes i18n("alsoHide")
 	stop
 
 *apply
@@ -142,7 +138,7 @@ if IsUserAnAdmin(){
 		; logmes "------"
 		sdim buf,32000 : sdim ln,4096
 		pipeexec buf,"REG " + command + root64 + keys.cnt + " /f /reg:64"
-		if stat : dialog "予期しないレジストリ・エラーが発生しました。" : goto *fresh_gui
+		if stat : dialog i18n("critical") : goto *fresh_gui
 		repeat
 			pipeget ln : if stat==0 : break
 		loop
@@ -150,7 +146,7 @@ if IsUserAnAdmin(){
 		; WOW6432 以下の設定
 		if osBit != "x86" {
 			pipeexec buf,"REG " + command + root32 + keys.cnt + " /f /reg:64"
-			if stat : dialog "予期しないレジストリ・エラーが発生しました。" : goto *fresh_gui
+			if stat : dialog i18n("critical") : goto *fresh_gui
 			repeat
 				pipeget ln : if stat==0 : break
 			loop
@@ -158,7 +154,7 @@ if IsUserAnAdmin(){
 		}
 		if cnt > 1 {
 			pipeexec buf,"REG " + command + root64 + keys.(cnt+5) + " /f /reg:64"
-			if stat : dialog "予期しないレジストリ・エラーが発生しました。" : goto *fresh_gui
+			if stat : dialog i18n("critical") : goto *fresh_gui
 			repeat
 				pipeget ln : if stat==0 : break
 			loop
@@ -166,7 +162,7 @@ if IsUserAnAdmin(){
 			; WOW6432 以下の設定				
 			if osBit != "x86" {
 				pipeexec buf,"REG " + command + root32 + keys.cnt + " /f /reg:64"
-				if stat : dialog "予期しないレジストリ・エラーが発生しました。" : goto *fresh_gui
+				if stat : dialog i18n("critical") : goto *fresh_gui
 				repeat
 					pipeget ln : if stat==0 : break
 				loop
@@ -179,26 +175,26 @@ if IsUserAnAdmin(){
 	foreach upVisible
 		if upVisible.cnt == 1 : policy="Show" : else : policy="Hide"
 		pipeexec buf,"REG ADD " + upRoot+upKeys.cnt + " /v ThisPCPolicy /d " +policy+ " /f /reg:64"
-		if stat : dialog "予期しないレジストリ・エラーが発生しました。" : goto *fresh_gui
+		if stat : dialog i18n("critical") : goto *fresh_gui
 		repeat
 			pipeget ln : if stat==0 : break
 		loop
 		if osBit != "x86" {
 			pipeexec buf,"REG ADD " + upRoot32+upKeys.cnt + " /v ThisPCPolicy /d " +policy+ " /f /reg:64"
-			if stat : dialog "予期しないレジストリ・エラーが発生しました。" : goto *fresh_gui
+			if stat : dialog i18n("critical") : goto *fresh_gui
 			repeat
 				pipeget ln : if stat==0 : break
 			loop
 		}
 		if cnt > 10 {
 			pipeexec buf,"REG ADD " + upRoot+upKeys.(cnt+2) + " /v ThisPCPolicy /d " +policy+ " /f /reg:64"
-			if stat : dialog "予期しないレジストリ・エラーが発生しました。" : goto *fresh_gui
+			if stat : dialog i18n("critical") : goto *fresh_gui
 			repeat
 				pipeget ln : if stat==0 : break
 			loop
 			if osBit != "x86" {
 				pipeexec buf,"REG ADD " + upRoot32+upKeys.(cnt+2) + " /v ThisPCPolicy /d " +policy+ " /f /reg:64"
-				if stat : dialog "予期しないレジストリ・エラーが発生しました。" : goto *fresh_gui
+				if stat : dialog i18n("critical") : goto *fresh_gui
 				repeat
 					pipeget ln : if stat==0 : break
 				loop
@@ -206,7 +202,7 @@ if IsUserAnAdmin(){
 		}
 		; buf="" : ln="" ; Clear pipeline buffer 
 	loop
-	dialog "変更を適用しました。\n正しく適用されていない場合は、\nPCを再起動してください。",,APP_TITLE
+	dialog i18n("finish"),,APP_TITLE
 	goto *fresh_gui
 
 *all_hide
@@ -234,5 +230,5 @@ if IsUserAnAdmin(){
 	goto *fresh_gui
 
 *about
-	dialog APP_TITLE +"\n"+ APP_VER +"\n(C) 2021 inucat\n\n詳細・使い方はREADMEを参照。",,APP_TITLE
+	dialog APP_TITLE +"\n"+ APP_VER +"\n(C) 2021 inucat\n\n"+i18n("detail"),,APP_TITLE;",,APP_TITLE
 	stop
