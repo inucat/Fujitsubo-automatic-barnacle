@@ -8,8 +8,8 @@ Toggle Show/Hide folders in "This PC/User Folder" on Windows 10!<br>
 
 ## クイックガイド
 ### 使い方
-1. `fujitsubo.exe`を**管理者として**実行する（レジストリ情報の取得に多少時間がかかります）。
-1. 非表示にしたいフォルダの**チェックを外す**（表示しておきたいフォルダのチェックはそのまま）。
+1. `fujitsubo.exe`を**管理者として**実行する。
+1. 非表示にしたいフォルダの**チェックを外す**（表示しておくフォルダのチェックはそのまま）。
 1. 「変更を適用」ボタンを押す。
 
 ### 元に戻すには...
@@ -20,7 +20,7 @@ Toggle Show/Hide folders in "This PC/User Folder" on Windows 10!<br>
 よって万が一の時は手動で書き換えることもできます。
 
 ## 既知の問題点
-- 中確率でレジストリの読み込みに時間がかかる。
+- レジストリの読み込みに時間がかかることがある。
 
 ## 告知事項
 作者はこのソフトウェアに不具合のないことを保証しません。
@@ -34,11 +34,11 @@ Toggle Show/Hide folders in "This PC/User Folder" on Windows 10!<br>
 ## 基本情報
 |**アプリ名**|ふじつぼ|
 |:---:|:---:|
-|**バージョン**|0.3.0|
+|**バージョン**|0.4.0|
 |**作者**|inucat|
 |**開発言語**|Hot Soup Processor 3|
 |**動作環境**|Windows 10 64bit版|
-|**対応言語**|日本語|
+|**対応言語**|日本語, 英語|
 |**ライセンス**|GNU GENERAL PUBLIC LICENSE|
 
 ## 窓口
@@ -47,11 +47,13 @@ Toggle Show/Hide folders in "This PC/User Folder" on Windows 10!<br>
 - Github: inucatのIssue
 
 ## 今後の予定
-- 英語対応
 - 開発言語をVB,C++,C#に切り替えるかも（高速化・効率化のため）
-- UIの改良
+- UIの改良をするかも
 
 ## 変更履歴
+- 2021-03-04 v0.4.0
+    - 英語表示に対応（Windowsの言語設定を自動で判別します。ただし未確認）。
+    - ボタンの位置を修正。
 - 2021-03-03 v0.3.0
     - **ユーザフォルダ下**の「リンク」「検索」など13個のフォルダ取扱いを追加！
     - **32bit**に理論上は対応（動作確認はしてません）
@@ -62,14 +64,14 @@ Toggle Show/Hide folders in "This PC/User Folder" on Windows 10!<br>
 - 2021-03-02 v0.1.0
     - 初版公開
 
-<!--
 ---
-(If the English description has any conflicts with the original Japanese one, the latter is correct.)
+
+##### (If the English description has any conflicts with the original Japanese one, the latter is correct.)
 
 ## Quick Start Guide
 ### Usage
 1. Run `fujitsubo.exe` as *Administrator*
-1. *Uncheck* folders to hide (leave them checked if you want them to be showed)
+1. *Uncheck* folders to hide (leave them checked to keep them shown)
 1. Press "Apply changes" button
 
 ### To revert...
@@ -77,15 +79,14 @@ Make sure all folders are checked then "Apply changes."
 
 ## How it works
 `fujitsubo.exe` edits the registry values to toggle show/hide folders.
-You can modify the `ThisPCPolicy` values under the key `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions` manually with `regedit.exe`. 
+You can modify them manually with `regedit.exe` if needed. 
 
 ## Known issues
-- It takes some long time to load the registry data.
-    - Please be patient...
+- It takes time to load the registry data.
 
 ## NOTICE
-There are NO WARRANTY that this software is perfect and without any bugs or glitches.
-Therefore possible and potential risks may exist and may damage your system.
+There are NO WARRANTY that this software is perfect and without any bugs or glitches;
+thus possible and potential risks may exist and may damage your system.
 Use this software AT YOUR OWN RISK.
 
 This software is distributed with the GNU GENERAL PUBLIC LICENSE.
@@ -95,7 +96,7 @@ See `LICENSE` for details.
 ## Basic Information
 |**Application Name**|Fujitsubo|
 |:---:|:---:|
-|**Version**|0.2.0|
+|**Version**|0.4.0|
 |**Author**|inucat|
 |**Built on**|Hot Soup Processor 3|
 |**Required Environment**|Windows 10 64bit|
@@ -107,4 +108,16 @@ Use the media below if you want to report bugs:
 - Twitter: @inucat4
 - Github: inucat
 
--->
+## Changelog
+- 2021-03-04 v0.4.0
+    - Supports both English and Japanese (not checked yet).
+    - Modified buttons layout.
+- 2021-03-03 v0.3.0
+    - Supports the various folders **in User's Folder**, such as 'Links,' 'Searches,' etc.
+    - Supports **32bit Windows** (not checked yet)
+    - Added a previlege confirmation dialog.
+- 2021-03-03 v0.2.0
+    - Prevented folders from disappearing unintentionally from User's Folder `%USERPROFILE%`.
+    - Unable to work properly on 32bit Windows 10.
+- 2021-03-02 v0.1.0
+    - First release.
