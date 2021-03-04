@@ -37,7 +37,7 @@ Toggle Show/Hide folders in "This PC/User Folder" on Windows 10!<br>
 |**バージョン**|1.0.0|
 |**作者**|inucat|
 |**開発言語**|Hot Soup Processor 3|
-|**動作環境**|Windows 10 64bit版|
+|**動作環境**|Windows 10|
 |**対応言語**|日本語, 英語|
 |**ライセンス**|GNU GENERAL PUBLIC LICENSE|
 
@@ -99,7 +99,7 @@ See `LICENSE` for details.
 |**Version**|1.0.0|
 |**Author**|inucat|
 |**Built on**|Hot Soup Processor 3|
-|**Required Environment**|Windows 10 64bit|
+|**Required Environment**|Windows 10|
 |**Language**|English, Japanese|
 |**License**|GNU GENERAL PUBLIC LICENSE|
 
