@@ -13,7 +13,7 @@
 #const CHK_W 128		; チェックボックス・ボタンの幅
 
 APP_TITLE=i18n("appTitle") : title APP_TITLE
-APP_VER="v0.4.0"
+APP_VER="v1.0.0"
 
 ; %UserProfile% reg keys
 upRoot = "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FolderDescriptions\\"

@@ -34,7 +34,7 @@ Toggle Show/Hide folders in "This PC/User Folder" on Windows 10!<br>
 ## 基本情報
 |**アプリ名**|ふじつぼ|
 |:---:|:---:|
-|**バージョン**|0.4.0|
+|**バージョン**|1.0.0|
 |**作者**|inucat|
 |**開発言語**|Hot Soup Processor 3|
 |**動作環境**|Windows 10 64bit版|
@@ -51,7 +51,7 @@ Toggle Show/Hide folders in "This PC/User Folder" on Windows 10!<br>
 - UIの改良をするかも
 
 ## 変更履歴
-- 2021-03-04 v0.4.0
+- 2021-03-04 v1.0.0
     - 英語表示に対応（Windowsの言語設定を自動で判別します。ただし未確認）。
     - ボタンの位置を修正。
 - 2021-03-03 v0.3.0
@@ -96,7 +96,7 @@ See `LICENSE` for details.
 ## Basic Information
 |**Application Name**|Fujitsubo|
 |:---:|:---:|
-|**Version**|0.4.0|
+|**Version**|1.0.0|
 |**Author**|inucat|
 |**Built on**|Hot Soup Processor 3|
 |**Required Environment**|Windows 10 64bit|
@@ -109,7 +109,7 @@ Use the media below if you want to report bugs:
 - Github: inucat
 
 ## Changelog
-- 2021-03-04 v0.4.0
+- 2021-03-04 v1.0.0
     - Supports both English and Japanese (not checked yet).
     - Modified buttons layout.
 - 2021-03-03 v0.3.0
