@@ -3,8 +3,10 @@
 #packopt name "Fujitsubo"
 ; #packopt manifest "fujitsubo.exe.manifest"
 ; #pack "fujitsubo.exe.manifest"
-#include "hspext.as"
-#include "hspinet.as"
+#include "hspext.as"	; hspext.dll required
+#include "hspinet.as"	; hspinet.dll required
+#include "hsp3util.as"
+#include "advapi32.as"
 #include "lang.hsp"
 #cmpopt	varinit 1	; 未初期化の変数参照をエラーにする
 
@@ -13,7 +15,7 @@
 #const CHK_W 128		; チェックボックス・ボタンの幅
 
 APP_TITLE=i18n("appTitle") : title APP_TITLE
-APP_VER="v1.0.0"
+APP_VER="v1.0.1"
 
 ; %UserProfile% reg keys
 upRoot = "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FolderDescriptions\\"
@@ -62,20 +64,29 @@ osBit=""
 getenv osBit, "PROCESSOR_ARCHITECTURE"
 if osBit == "x86" {;   osBit=="x86" --> is WOW64 or true 32bit Win?
 	getenv osBit, "PROCESSOR_ARCHITEW6432" ;   32bit --> osBit="x86"
-} logmes osBit
+}; logmes osBit
 
 ; Check Admin Privilege
 #uselib "shell32.dll"
 #cfunc IsUserAnAdmin  "IsUserAnAdmin"
 if IsUserAnAdmin(){
-	logmes "Good."
+	;logmes "Good."
 }else{
 	dialog i18n("adminDialog"),1,APP_TITLE
 	end
 }
 
 *load_keys
-	screen ,640,540 : cls 1 : mes i18n("loadReg") : logmes "\n===LOADING KEYS==="
+	screen 0,640,540 : cls 1 : objmode 2,1 : font "Yu Gothic UI",, 16 : mes i18n("loadReg"); : logmes "\n===LOADING KEYS==="
+	progbar 200,20 : IDPBar=stat : progbar_set IDPBar,100/(N+N_UP)
+
+	;#func global RegOpenKeyExA "RegOpenKeyExA" sptr,sptr,sptr,sptr,sptr
+	;#func global RegCreateKeyExA "RegCreateKeyExA" sptr,sptr,sptr,sptr,sptr,sptr,sptr,sptr,sptr
+	;#func global RegDeleteKeyA "RegDeleteKeyA" sptr,sptr
+	;#func global RegCloseKey "RegCloseKey" sptr
+	;#func global RegQueryValueExA "RegQueryValueExA" sptr,sptr,sptr,sptr,sptr,sptr
+	;#func global RegSetValueExA "RegSetValueExA" sptr,sptr,sptr,sptr,sptr,sptr
+	;pointer = varptr(str)
 
 	sdim buf,32000 : sdim ln,4096
 	pipeexec buf,"reg query " + root64 + " /reg:64"
@@ -83,10 +94,11 @@ if IsUserAnAdmin(){
 	repeat
 		pipeget ln : if stat == 0 : break
 	loop
-	logmes buf
+	;logmes buf
 
 	foreach keyLabels ; Set isVisible.cnt to 1 if each key is under root, otherwise 0
 		if instr( buf , , keys.cnt ) >= 0 : isVisible.cnt=1 : else : isVisible.cnt=0
+		progbar_step IDPBar
 	loop
 
 	; Load %USERPROFILE% status
@@ -96,12 +108,13 @@ if IsUserAnAdmin(){
 		repeat
 			pipeget ln : if stat == 0 : break
 		loop
-		logmes buf
+		;logmes buf
 		if instr( buf , , "Hide" ) < 0 : upVisible.cnt=1 : else : upVisible.cnt=0
+		progbar_step IDPBar
 	loop
 
 *fresh_gui
-	cls 1
+	cls 1 : objmode 2,1 : font "Yu Gothic UI"
 	objsize CHK_W
 	mes i18n("PC") ; This PC
 	button i18n("Hideall"), *all_hide
@@ -127,7 +140,8 @@ if IsUserAnAdmin(){
 	stop
 
 *apply
-	cls 1 : mes "適用中...お待ちください" : logmes "===APPLYING==="; Applying message
+	cls 1 : objmode 2,1 : font "Yu Gothic UI" : mes i18n("applying"); : logmes "===APPLYING==="; Applying message
+	progbar 200,20 : IDPBar=stat : progbar_set IDPBar,100/(N+N_UP) 
 	foreach keyLabels
 		command=""
 		if isVisible.cnt == 0 : command = "DELETE " : else : command = "ADD "
@@ -166,6 +180,7 @@ if IsUserAnAdmin(){
 				; logmes buf
 			}
 		}
+		progbar_step IDPBar
 	loop
 
 	; %UserProfile% application
@@ -198,6 +213,7 @@ if IsUserAnAdmin(){
 			}
 		}
 		; buf="" : ln="" ; Clear pipeline buffer 
+		progbar_step IDPBar
 	loop
 	dialog i18n("finish"),,APP_TITLE
 	goto *fresh_gui

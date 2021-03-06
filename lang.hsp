@@ -4,6 +4,7 @@
 
 	#deffunc i18nInit
 		langcode = GetUserDefaultUILanguage()
+		;langcode=0
 		return
 
 	#define q if msgid==
