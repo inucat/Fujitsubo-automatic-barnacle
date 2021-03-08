@@ -1,0 +1,20 @@
+#define WS_EX_DLGMODALFRAME $00000001
+#define WS_EX_WINDOWEDGE $00000100
+#define WS_EX_CLIENTEDGE $00000200
+#define WS_EX_STATICEDGE $00020000
+#define WS_CHILD $40000000
+#define WS_VISIBLE $10000000
+#define SB_SETTEXT 0x0401
+
+
+
+cls 1
+widRoot=hwnd
+winobj "msctls_statusbar32","",$00000101,WS_CHILD | WS_VISIBLE
+widStatusbar=stat
+mes widStatusbar
+winobj "ToolbarWindow32","ok",$00020000,$50000000
+widToolbar=stat
+
+sendmsg objinfo(widStatusbar,2), SB_SETTEXT,0|0,"good afternoon!"
+sendmsg widRoot, 0x000A,0,0

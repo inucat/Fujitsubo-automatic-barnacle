@@ -32,7 +32,7 @@
 		q"Favorites": 		j "お気に入り"		z msgid
 		
 		q"PC": j "PC:" z "This PC:"
-		q"user's": j "ユーザのフォルダ" z "User's folder:"
+		q"user's": j "ユーザのフォルダ:" z "User's folder:"
 		q"Reload": j "再読込" z "Reload"
 		q"Hideall": j "すべて非表示" z "Hide all"
 		q"Showall": j "すべて表示" z "Show all"
@@ -48,9 +48,3 @@
 	return
 #global
 i18nInit
-
-; v=0;
-; newmod v,i18n_Module
-;mes i18n("appTitle")
-;dialog i18n("adminDialog"),1,i18n("appTitle")
-
