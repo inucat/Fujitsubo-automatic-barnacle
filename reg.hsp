@@ -1,8 +1,6 @@
 ; ふじつぼ Automatic-Fujitsubo
 ; (C) 2021 inucat. Under GNU GPL.
 #packopt name "Fujitsubo"
-; #packopt manifest "fujitsubo.exe.manifest"
-; #pack "fujitsubo.exe.manifest"
 #include "hspext.as"	; hspext.dll required
 #include "hspinet.as"	; hspinet.dll required
 #include "hsp3util.as"
@@ -14,50 +12,51 @@
 #const N_UP 13			; %UserProfile% の13個のフォルダ
 #const CHK_W 128		; チェックボックス・ボタンの幅
 
-APP_TITLE=i18n("appTitle") : title APP_TITLE
-APP_VER="v1.0.1"
+#define APP_TITLE i18n("appTitle")
+#define APP_VER "v1.0.1"
 
 ; %UserProfile% reg keys
-upRoot = "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FolderDescriptions\\"
-upRoot32 = "HKLM\\SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FolderDescriptions\\"
-upPic =	"{0ddd015d-b06c-45d5-8c4c-f59713854639}\\PropertyBag"	; Picture
-upVid =	"{35286a68-3c57-41a1-bbb1-0eae73d76c95}\\PropertyBag"	; Video
-upDwn =	"{7d83ee9b-2244-4e70-b1f5-5393042af1e4}\\PropertyBag"	; Download
-upMus =	"{a0c69a99-21c8-4671-8703-7934162fcf1d}\\PropertyBag"	; Music
-upDoc =	"{f42ee2d3-909f-4907-8871-4c22fc0bf756}\\PropertyBag"	; Documents
-up3do =	"{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\\PropertyBag"	; 3D Objects
-upCon = "{56784854-C6CB-462B-8169-88E350ACB882}\\PropertyBag"	; Contacts
-upLnk = "{bfb9d5e0-c6a9-404c-b2b2-ae6db6af4968}\\PropertyBag"	; Links
-upOne = "{A52BBA46-E9E1-435f-B3D9-28DAA648C0F6}\\PropertyBag"	; OneDrive
-upGam = "{4C5C32FF-BB9D-43b0-B5B4-2D72E54EAAA4}\\PropertyBag"	; Saved Games
-upSea = "{7d1d3a04-debb-4115-95cf-2f29da2920da}\\PropertyBag"	; Searches
-upFa1 = "{1777F761-68AD-4D8A-87BD-30B759FA33DD}\\PropertyBag"	; Favorites 1st key
-upFa2 = "{7CFBEFBC-DE1F-45AA-B843-A542AC536CC9}\\PropertyBag"	; Favorites 2nd key
-upDe1 =	"{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}\\PropertyBag"	; Desktop 1st key
-upDe2 =	"{754AC886-DF64-4CBA-86B5-F7FBF4FBCEF5}\\PropertyBag"	; Desktop 2nd key
+#define subKeyUP "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FolderDescriptions\\"
+;upRoot32 = "HKLM\\SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FolderDescriptions\\"
+#define upPic "{0ddd015d-b06c-45d5-8c4c-f59713854639}\\PropertyBag"	; Picture
+#define upVid "{35286a68-3c57-41a1-bbb1-0eae73d76c95}\\PropertyBag"	; Video
+#define upDwn "{7d83ee9b-2244-4e70-b1f5-5393042af1e4}\\PropertyBag"	; Download
+#define upMus "{a0c69a99-21c8-4671-8703-7934162fcf1d}\\PropertyBag"	; Music
+#define upDoc "{f42ee2d3-909f-4907-8871-4c22fc0bf756}\\PropertyBag"	; Documents
+#define up3do "{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\\PropertyBag"	; 3D Objects
+#define upCon "{56784854-C6CB-462B-8169-88E350ACB882}\\PropertyBag"	; Contacts
+#define upLnk "{bfb9d5e0-c6a9-404c-b2b2-ae6db6af4968}\\PropertyBag"	; Links
+#define upOne "{A52BBA46-E9E1-435f-B3D9-28DAA648C0F6}\\PropertyBag"	; OneDrive
+#define upGam "{4C5C32FF-BB9D-43b0-B5B4-2D72E54EAAA4}\\PropertyBag"	; Saved Games
+#define upSea "{7d1d3a04-debb-4115-95cf-2f29da2920da}\\PropertyBag"	; Searches
+#define upFa1 "{1777F761-68AD-4D8A-87BD-30B759FA33DD}\\PropertyBag"	; Favorites 1st key
+#define upFa2 "{7CFBEFBC-DE1F-45AA-B843-A542AC536CC9}\\PropertyBag"	; Favorites 2nd key
+#define upDe1 "{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}\\PropertyBag"	; Desktop 1st key
+#define upDe2 "{754AC886-DF64-4CBA-86B5-F7FBF4FBCEF5}\\PropertyBag"	; Desktop 2nd key
 
 ; "This PC" reg keys
-root64="HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\MyComputer\\NameSpace\\"
-root32="HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Explorer\\MyComputer\\NameSpace\\"
-d3oKey="{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}"
-desKey="{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}"
-docKey1="{A8CDFF1C-4878-43be-B5FD-F8091C1C60D0}"
-docKey2="{d3162b92-9365-467a-956b-92703aca08af}"
-dwnKey1="{374DE290-123F-4565-9164-39C4925E467B}"
-dwnKey2="{088e3905-0323-4b02-9826-5d99428e115f}"
-musKey1="{1CF1260C-4DD0-4ebb-811F-33C572699FDE}"
-musKey2="{3dfdf296-dbec-4fb4-81d1-6a3438bcf4de}"
-picKey1="{3ADD1653-EB32-4cb0-BBD7-DFA0ABB5ACCA}"
-picKey2="{24ad3ad4-a569-4530-98e1-ab02f9417aa8}"
-vidKey1="{A0953C92-50DC-43bf-BE83-3742FED03C9C}"
-vidKey2="{f86fa3ab-70d2-4fc7-9c99-fcbf05467f3a}"
+#define subKeyPC "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\MyComputer\\NameSpace\\"
+;root32="SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Explorer\\MyComputer\\NameSpace\\"
+#define d3oKey "{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}"
+#define desKey "{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}"
+#define docKey1 "{A8CDFF1C-4878-43be-B5FD-F8091C1C60D0}"
+#define docKey2 "{d3162b92-9365-467a-956b-92703aca08af}"
+#define dwnKey1 "{374DE290-123F-4565-9164-39C4925E467B}"
+#define dwnKey2 "{088e3905-0323-4b02-9826-5d99428e115f}"
+#define musKey1 "{1CF1260C-4DD0-4ebb-811F-33C572699FDE}"
+#define musKey2 "{3dfdf296-dbec-4fb4-81d1-6a3438bcf4de}"
+#define picKey1 "{3ADD1653-EB32-4cb0-BBD7-DFA0ABB5ACCA}"
+#define picKey2 "{24ad3ad4-a569-4530-98e1-ab02f9417aa8}"
+#define vidKey1 "{A0953C92-50DC-43bf-BE83-3742FED03C9C}"
+#define vidKey2 "{f86fa3ab-70d2-4fc7-9c99-fcbf05467f3a}"
 
-dim isVisible,N
-dim keys,N+5 : keys=d3oKey, desKey, docKey1, dwnKey1, musKey1, picKey1, vidKey1, docKey2, dwnKey2, musKey2, picKey2, vidKey2
-dim keyLabels,N : keyLabels=i18n("3D Object"),i18n("Desktop"),i18n("Documents"),i18n("Downloads"),i18n("Music"),i18n("Pictures"),i18n("Video")
-dim upVisible,N_UP
-dim upKeys,N_UP : upKeys=up3do, upDoc, upDwn, upMus, upPic, upVid, upCon, upLnk, upOne, upGam, upSea, upFa1, upDe1, upFa2, upDe2 
-dim upLabels,N_UP : upLabels=i18n("3D Object"),i18n("Documents"),i18n("Downloads"),i18n("Music"),i18n("Pictures"),i18n("Video"),i18n("Contacts"),i18n("Links"),i18n("OneDrive"),i18n("Saved Games"),i18n("Searches"),i18n("Favorites"),i18n("Desktop")
+title APP_TITLE
+dim isVisiblePC,N
+dim keysPC,N+5 : keys=d3oKey, desKey, docKey1, dwnKey1, musKey1, picKey1, vidKey1, docKey2, dwnKey2, musKey2, picKey2, vidKey2
+dim keyLabelsPC,N : keyLabels=i18n("3D Object"),i18n("Desktop"),i18n("Documents"),i18n("Downloads"),i18n("Music"),i18n("Pictures"),i18n("Video")
+dim isVisibleUP,N_UP
+dim keysUP,N_UP : upKeys=up3do, upDoc, upDwn, upMus, upPic, upVid, upCon, upLnk, upOne, upGam, upSea, upFa1, upDe1, upFa2, upDe2 
+dim keyLabelsUP,N_UP : upLabels=i18n("3D Object"),i18n("Documents"),i18n("Downloads"),i18n("Music"),i18n("Pictures"),i18n("Video"),i18n("Contacts"),i18n("Links"),i18n("OneDrive"),i18n("Saved Games"),i18n("Searches"),i18n("Favorites"),i18n("Desktop")
 
 ; Detect Windows OS bit (x86 or not)
 osBit=""
@@ -70,9 +69,8 @@ if osBit == "x86" {;   osBit=="x86" --> is WOW64 or true 32bit Win?
 #uselib "shell32.dll"
 #cfunc IsUserAnAdmin  "IsUserAnAdmin"
 if IsUserAnAdmin(){
-	;logmes "Good."
 }else{
-	;dialog i18n("adminDialog"),1,APP_TITLE
+	dialog i18n("adminDialog"),1,APP_TITLE
 	;end
 }
 
@@ -87,17 +85,43 @@ if IsUserAnAdmin(){
 	;#func global RegDeleteKeyA "RegDeleteKeyA" sptr,sptr
 	;#func global RegCloseKey "RegCloseKey" sptr
 	;#func global RegQueryValueExA "RegQueryValueExA" sptr,sptr,sptr,sptr,sptr,sptr
+;	#func global RegGetValueA "RegGetValueA" sptr,sptr,sptr,sptr,sptr,sptr
 	;#func global RegSetValueExA "RegSetValueExA" sptr,sptr,sptr,sptr,sptr,sptr
 	;pointer = varptr(str)
-	keyptr=0
-	hklm=0x80000002 : nspc = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\MyComputer\\NameSpace\\"
-	KEY_WOW64_64KEY=0x0100 | 0x20019
-	zero=0
-	regStat = RegOpenKeyExA(hklm, nspc, 0, KEY_WOW64_64KEY, varptr(keyptr));
-	mes "stat= "+stat
-	mes keyptr
-	stop
+	; lpSubKeyRegGetKey 
+	#const RRF_RT_REG_SZ 0x00000002
+	#const RRF_SUBKEY_WOW6464KEY 0x00010000
+	#const RRF_SUBKEY_WOW6432KEY 0x00020000
+	;
+	; This PC Keys
+	lpKeyHnd=0
+	hklm=0x80000002
+	KEY_WOW64_64KEY=0x0100 | 0x20019; 64/32bit Common
+	foreach isVisiblePC
+	nspc = subKeyPC + keysPC.cnt
+	regStat = RegOpenKeyExA(hklm, nspc, 0, KEY_WOW64_64KEY, varptr(lpKeyHnd));
+	if regStat == 0 : isVisiblePC=1 : if regStat == 2 : isVisiblePC=0 : else : dialog "ERROR",1 : end
+;	mes "stat= "+stat : mes lpKeyHnd
+	loop
+	;
+	; %UserProfile% Keys
+	foreach isVisibleUP
+	sdim plcValue,4 : pcbData=0
+	lpSubKey = subKeyUP + keysUP.cnt
+;	regStat = RegOpenKeyExA
+	regStat = RegOpenKeyExA(hklm, lpSubKey, 0, KEY_WOW64_64KEY, varptr(lpKeyHnd));
+	if stat == 0 {
+		regStat = RegQueryValueExA(lpKeyHnd, "ThisPCPolicy", 0, 0, varptr(plcValue), varptr(pcbData));"ThisPCPolicy", 0x00000002, "", varptr(pvData), varptr(pcbData));
+		regStat = RegCloseKey(lpKeyHnd)
+	}
+	mes stat
+;	regStat = RegGetValueA(hklm, lpSubKey, "ThisPCPolicy", 0x00000002, "", varptr(pvData), varptr(pcbData));
+	if plcValue=="Hide" : isVisibleUP.cnt=1 : else : isVisibleUP.cnt=0; : else : dialog "ERROR",1 : end
+;	if regStat!=0 | regStat!=2 : dialog "ERROR",1 : end
+	mes "stat= "+stat : mes plcValue
+	loop
 
+/*
 	sdim buf,32000 : sdim ln,4096 : font "Yu Gothic UI",12 : mes __line__;;ここと
 		;dialog "test44"
 	pipeexec buf,"reg query " + root64 + " /reg:64" :mes __line__
@@ -130,6 +154,7 @@ if IsUserAnAdmin(){
 		progbar_step IDPBar
 	loop
 	;dialog "J"
+*/
 
 *fresh_gui
 	cls 1 : objmode 2,1 : font "Yu Gothic UI"
@@ -137,16 +162,16 @@ if IsUserAnAdmin(){
 	mes i18n("PC") ; This PC
 	button i18n("Hideall"), *all_hide
 	button i18n("Showall"), *all_show
-	foreach isVisible
-		chkbox keyLabels.cnt, isVisible.cnt
+	foreach isVisiblePC
+		chkbox keyLabelsPC.cnt, isVisiblePC.cnt
 	loop
 	
 	pos CHK_W,0
 	mes i18n("user's") ; %UserProfile%
 	button i18n("Hideall"), *all_hide_up
 	button i18n("Showall"), *all_show_up
-	foreach upVisible
-		chkbox upLabels.cnt, upVisible.cnt
+	foreach isVisibleUP
+		chkbox keyLabelsUP.cnt, isVisibleUP.cnt
 	loop
 
 	pos CHK_W*2,0
@@ -160,12 +185,12 @@ if IsUserAnAdmin(){
 *apply
 	cls 1 : objmode 2,1 : font "Yu Gothic UI" : mes i18n("applying"); : logmes "===APPLYING==="; Applying message
 	progbar 200,20 : IDPBar=stat : progbar_set IDPBar,100/(N+N_UP) 
-	foreach keyLabels
-		command=""
-		if isVisible.cnt == 0 : command = "DELETE " : else : command = "ADD "
+	foreach keyLabelsPC
+;		command=""
+;		if isVisible.cnt == 0 : command = "DELETE " : else : command = "ADD "
 		
 		; logmes "------"
-		sdim buf,32000 : sdim ln,4096
+/*		sdim buf,32000 : sdim ln,4096
 		pipeexec buf,"REG " + command + root64 + keys.cnt + " /f /reg:64"
 		if stat : dialog i18n("critical") : goto *fresh_gui
 		repeat
@@ -198,24 +223,25 @@ if IsUserAnAdmin(){
 				; logmes buf
 			}
 		}
-		progbar_step IDPBar
+		progbar_step IDPBar*/
 	loop
 
 	; %UserProfile% application
-	foreach upVisible
-		if upVisible.cnt == 1 : policy="Show" : else : policy="Hide"
-		pipeexec buf,"REG ADD " + upRoot+upKeys.cnt + " /v ThisPCPolicy /d " +policy+ " /f /reg:64"
-		if stat : dialog i18n("critical") : goto *fresh_gui
-		repeat
-			pipeget ln : if stat==0 : break
-		loop
-		if osBit != "x86" {
-			pipeexec buf,"REG ADD " + upRoot32+upKeys.cnt + " /v ThisPCPolicy /d " +policy+ " /f /reg:64"
-			if stat : dialog i18n("critical") : goto *fresh_gui
-			repeat
-				pipeget ln : if stat==0 : break
-			loop
-		}
+	foreach isVisibleUP
+	sdim plcValue,4 : pcbData=0
+	plcValue = isVisibleUP.cnt
+	lpSubKey = subKeyUP + keysUP.cnt
+	keyHandle=""
+	RegCreateKeyExA(HKLM, subKeyUP, 0, 0, 0, 0x0100 | 0x20006, 0, varptr(keyHandle), 0)
+	RegSetValueExA(keyHandle, "ThisPCPolicy", 0, REG_SZ, plcValue, len(plcValue)
+	RegCloseKey(KeyHandle)
+	if osBit != "x86" {
+		RegSetValueExA(keyHandle, "ThisPCPolicy", 0, REG_SZ, plcValue, len(plcValue) 
+		RegSetValueExA(keyHandle, "ThisPCPolicy", 0, REG_SZ, plcValue, len(plcValue)
+		RegCloseKey(KeyHandle)
+	}
+	;mes stat
+	loop/*
 		if cnt > 10 {
 			pipeexec buf,"REG ADD " + upRoot+upKeys.(cnt+2) + " /v ThisPCPolicy /d " +policy+ " /f /reg:64"
 			if stat : dialog i18n("critical") : goto *fresh_gui
@@ -231,32 +257,32 @@ if IsUserAnAdmin(){
 			}
 		}
 		; buf="" : ln="" ; Clear pipeline buffer 
-		progbar_step IDPBar
+		progbar_step IDPBar*/
 	loop
 	dialog i18n("finish"),,APP_TITLE
 	goto *fresh_gui
 
 *all_hide
-	foreach isVisible
-		isVisible.cnt=0
+	foreach isVisiblePC
+		isVisiblePC.cnt=0
 	loop
 	goto *fresh_gui
 
 *all_show
-	foreach isVisible
-		isVisible.cnt=1
+	foreach isVisiblePC
+		isVisiblePC.cnt=1
 	loop
 	goto *fresh_gui
 
 *all_show_up
-	foreach upVisible
-		upVisible.cnt=1
+	foreach isVisibleUP
+		isVisibleUP.cnt=1
 	loop
 	goto *fresh_gui
 
 *all_hide_up
-	foreach upVisible
-		upVisible.cnt=0
+	foreach isVisibleUP
+		isVisibleUP.cnt=0
 	loop
 	goto *fresh_gui
 
