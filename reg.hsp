@@ -1,4 +1,4 @@
-; ‚Ó‚¶‚Â‚Ú Automatic-Fujitsubo
+; ï¿½Ó‚ï¿½ï¿½Â‚ï¿½ Automatic-Fujitsubo
 ; (C) 2021 inucat. Under GNU GPL.
 #packopt name "Fujitsubo"
 ; #include "hspext.as"	; hspext.dll required
@@ -9,11 +9,11 @@
 #include "advapi32.as"
 #uselib "shell32.dll"					; For Check Admin
 #cfunc IsUserAnAdmin  "IsUserAnAdmin"
-#cmpopt	varinit 1	; –¢‰Šú‰»‚Ì•Ï”ŽQÆ‚ðƒGƒ‰[‚É‚·‚é
+#cmpopt	varinit 1	; ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì•Ïï¿½ï¿½Qï¿½Æ‚ï¿½ï¿½Gï¿½ï¿½ï¿½[ï¿½É‚ï¿½ï¿½ï¿½
 
-#const N 7				; Ý’è‰Â”\‚ÈƒtƒHƒ‹ƒ_‚Í7ŒÂ
-#const N_UP 13			; %UserProfile% ‚Ì13ŒÂ‚ÌƒtƒHƒ‹ƒ_
-#const CHK_W 128		; ƒ`ƒFƒbƒNƒ{ƒbƒNƒXEƒ{ƒ^ƒ“‚Ì•
+#const N 7				; ï¿½Ý’ï¿½Â”\ï¿½Èƒtï¿½Hï¿½ï¿½ï¿½_ï¿½ï¿½7ï¿½ï¿½
+#const N_UP 13			; %UserProfile% ï¿½ï¿½13ï¿½Â‚Ìƒtï¿½Hï¿½ï¿½ï¿½_
+#const CHK_W 128		; ï¿½`ï¿½Fï¿½bï¿½Nï¿½{ï¿½bï¿½Nï¿½Xï¿½Eï¿½{ï¿½^ï¿½ï¿½ï¿½Ì•ï¿½
 
 #define APP_TITLE i18n("appTitle")
 #define APP_VER "v1.0.1"
@@ -41,28 +41,28 @@ if IsUserAnAdmin(){
 }
 
 *load_keys
-	screen 0,640,540 : cls 1 : objmode 2,1 : font "Yu Gothic UI",, 16 : mes i18n("loadReg")
+	screen 0,640,540 : cls 1 : objmode 2,1 : font "Yu Gothic UI",, 16 : mes i18n("loadReg") : logmes "......LOADING"
 	; progbar 200,20 : IDPBar=stat : progbar_set IDPBar,100/(N+N_UP)
 	;
 	; This PC Keys
 	repeat N
 	keyHandle=0
-	lpSubKey = subKeyPC +"\\"+ keysPC.cnt; : mes lpSubKey
-	rstat = RegOpenKeyExA(HKLM, lpSubKey, 0, KEY_WOW64_64KEY | KEY_READ, varptr(keyHandle))
-	if stat == 0 : isVisiblePC=1 : if stat == 2 : isVisiblePC=0 : else : dialog "ERROR",1 : end
+	lpSubKey = subKeyPC +"\\"+ keysPC.cnt : logmes lpSubKey
+	rstat = RegOpenKeyExA(HKLM, lpSubKey, 0, KEY_WOW64_64KEY | KEY_READ, varptr(keyHandle)) : logmes "OpenStat: "+rstat
+	if rstat == 0 : isVisiblePC.cnt = 1 : else : if  rstat == 2 : isVisiblePC.cnt = 0 : else : dialog "ERROR",1 : end
 	loop; : stop
 	;
 	; %UserProfile% Keys
 	repeat N_UP
 	keyHandle=0 : valueSize=8 : sdim plcValue,valueSize
-	lpSubKey = subKeyUP +"\\"+ keysUP.cnt 
-	rstat = RegOpenKeyExA(HKLM, lpSubKey, 0, KEY_WOW64_64KEY | KEY_READ, varptr(keyHandle)) 
+	lpSubKey = subKeyUP +"\\"+ keysUP.cnt  : logmes lpSubKey
+	rstat = RegOpenKeyExA(HKLM, lpSubKey, 0, KEY_WOW64_64KEY | KEY_READ, varptr(keyHandle))
 	if stat == 0 {
 		rstat = RegQueryValueExA(keyHandle, "ThisPCPolicy", 0, 0, varptr(plcValue), varptr(valueSize))
 		rstat = RegCloseKey(keyHandle) 
 	}
 	if plcValue=="Hide" : isVisibleUP.cnt=0 : else : isVisibleUP.cnt=1
-	mes "stat: "+stat+" Policy: "+plcValue
+	logmes "OpenStat: "+stat+"; Policy: "+plcValue
 	loop
 	
 *fresh_gui
@@ -71,7 +71,7 @@ if IsUserAnAdmin(){
 	mes i18n("PC") ; This PC
 	button i18n("Hideall"), *all_hide
 	button i18n("Showall"), *all_show
-	foreach isVisiblePC
+	repeat N
 		chkbox keyLabelsPC.cnt, isVisiblePC.cnt
 	loop
 	
@@ -79,7 +79,7 @@ if IsUserAnAdmin(){
 	mes i18n("user's") ; %UserProfile%
 	button i18n("Hideall"), *all_hide_up
 	button i18n("Showall"), *all_show_up
-	foreach isVisibleUP
+	repeat N_UP
 		chkbox keyLabelsUP.cnt, isVisibleUP.cnt
 	loop
 
@@ -92,56 +92,47 @@ if IsUserAnAdmin(){
 	stop
 
 *apply
-	; cls 1 : objmode 2,1 : font "Yu Gothic UI" : mes i18n("applying"); : logmes "===APPLYING==="; Applying message
+	cls 1 : objmode 2,1 : font "Yu Gothic UI" : mes i18n("applying") : logmes "===APPLYING==="; Applying message
 	; progbar 200,20 : IDPBar=stat : progbar_set IDPBar,100/(N+N_UP)
 	;
 	; This PC Keys
 	repeat N
-		keyHandle=0 : createdKeyHandle=0
+		keyHandle=0
+		keyHandl2=0 : createdKeyHandle=0
 		lpSubKey = subKeyPC +"\\"+ keysPC.cnt
-		rstat = RegOpenKeyExA(HKLM, lpSubKey, 0, KEY_WOW64_64KEY | KEY_WRITE, varptr(keyHandle))
-		if rstat == 0 {
-			if isVisiblePC==0 : rstat = RegDeleteKeyExA(keyHandle, "", KEY_WOW64_64KEY, 0)
-			else {
-				rstat = RegcreateKeyExA(keyHandle, "", 0, 0, 0, KEY_WOW64_64KEY | KEY_WRITE, 0, createdKeyHandle, 0)
-				rstat = RegCloseKey(createdKeyHandle)
-			rstat = RegCloseKey(keyHandle)
+		lpSubKe2 = subKeyPC +"\\"+ keysPC.(cnt+5)
+		rstat = RegOpenKeyExA(HKLM, lpSubKey, 0, KEY_WOW64_64KEY | KEY_WRITE, varptr(keyHandle)) : logmes "OpenStat: "+rstat
+		rstat = RegOpenKeyExA(HKLM, lpSubKe2, 0, KEY_WOW64_64KEY | KEY_WRITE, varptr(keyHandl2)) : logmes "OpenStat: "+rstat
+		if isVisiblePC.cnt == 0 {
+			rstat = RegDeleteKeyExA(keyHandle, "", KEY_WOW64_64KEY, 0) : logmes "DelStat: "+rstat
+			rstat = RegDeleteKeyExA(keyHandl2, "", KEY_WOW64_64KEY, 0) : logmes "DelStat: "+rstat
+			rstat = RegCloseKey(keyHandle) : logmes "CloStat: "+rstat
+			rstat = RegCloseKey(keyHandl2) : logmes "CloStat: "+rstat
+		} else {
+			rstat = RegcreateKeyExA(HKLM, lpSubKey, 0, 0, 0, KEY_WOW64_64KEY | KEY_WRITE, 0, varptr(createdKeyHandle), 0) : logmes "CreStat: "+rstat
+			rstat = RegCloseKey(createdKeyHandle)
+			rstat = RegcreateKeyExA(HKLM, lpSubKe2, 0, 0, 0, KEY_WOW64_64KEY | KEY_WRITE, 0, varptr(createdKeyHandle), 0) : logmes "CreStat: "+rstat
+			rstat = RegCloseKey(createdKeyHandle)
 		}
-		; if cnt >= 2 {
-		; 	keyHandle=0 : createdKeyHandle=0
-		; 	lpSubKey = subKeyPC +"\\"+ keysPC.(cnt+(N-2))
-		; 	rstat = RegOpenKeyExA(HKLM, lpSubKey, 0, KEY_WOW64_64KEY | KEY_WRITE, varptr(keyHandle))
-		; 	if rstat == 0 {
-		; 		if isVisiblePC==0 : rstat = RegDeleteKeyExA(keyHandle, "", KEY_WOW64_64KEY, 0)
-		; 		else {
-		; 			rstat = RegcreateKeyExA(keyHandle, "", 0, 0, 0, KEY_WOW64_64KEY | KEY_WRITE, 0, createdKeyHandle, 0)
-		; 			rstat = RegCloseKey(createdKeyHandle)
-		; 		rstat = RegCloseKey(keyHandle)
-		; 	}
-		; }
+		;
 		; for wow6432 redundant
-		keyHandle=0 : createdKeyHandle=0
+		keyHandle=0
+		keyHandl2=0 : createdKeyHandle=0
 		lpSubKey = subKeyPC +"\\"+ keysPC.cnt
-		rstat = RegOpenKeyExA(HKLM, lpSubKey, 0, KEY_WOW64_32KEY | KEY_WRITE, varptr(keyHandle))
-		if rstat == 0 {
-			if isVisiblePC==0 : rstat = RegDeleteKeyExA(keyHandle, "", KEY_WOW64_32KEY, 0)
-			else {
-				rstat = RegcreateKeyExA(keyHandle, "", 0, 0, 0, KEY_WOW64_32KEY | KEY_WRITE, 0, createdKeyHandle, 0)
-				rstat = RegCloseKey(createdKeyHandle)
-			rstat = RegCloseKey(keyHandle)
+		lpSubKe2 = subKeyPC +"\\"+ keysPC.(cnt+5)
+		rstat = RegOpenKeyExA(HKLM, lpSubKey, 0, KEY_WOW64_32KEY | KEY_WRITE, varptr(keyHandle)) : logmes "OpenStat: "+rstat
+		rstat = RegOpenKeyExA(HKLM, lpSubKe2, 0, KEY_WOW64_32KEY | KEY_WRITE, varptr(keyHandl2)) : logmes "OpenStat: "+rstat
+		if isVisiblePC.cnt == 0 {
+			rstat = RegDeleteKeyExA(keyHandle, "", KEY_WOW64_32KEY, 0) : logmes "DelStat: "+rstat
+			rstat = RegDeleteKeyExA(keyHandl2, "", KEY_WOW64_32KEY, 0) : logmes "DelStat: "+rstat
+			rstat = RegCloseKey(keyHandle) : logmes "CloStat: "+rstat
+			rstat = RegCloseKey(keyHandl2) : logmes "CloStat: "+rstat
+		} else {
+			rstat = RegcreateKeyExA(HKLM, lpSubKey, 0, 0, 0, KEY_WOW64_32KEY | KEY_WRITE, 0, varptr(createdKeyHandle), 0) : logmes "CreStat: "+rstat
+			rstat = RegCloseKey(createdKeyHandle)
+			rstat = RegcreateKeyExA(HKLM, lpSubKe2, 0, 0, 0, KEY_WOW64_32KEY | KEY_WRITE, 0, varptr(createdKeyHandle), 0) : logmes "CreStat: "+rstat
+			rstat = RegCloseKey(createdKeyHandle)
 		}
-		; if cnt >= 2 {
-		; 	keyHandle=0 : createdKeyHandle=0
-		; 	lpSubKey = subKeyPC +"\\"+ keysPC.(cnt+(N-2))
-		; 	rstat = RegOpenKeyExA(HKLM, lpSubKey, 0, KEY_WOW64_32KEY | KEY_WRITE, varptr(keyHandle))
-		; 	if rstat == 0 {
-		; 		if isVisiblePC==0 : rstat = RegDeleteKeyExA(keyHandle, "", KEY_WOW64_32KEY, 0)
-		; 		else {
-		; 			rstat = RegcreateKeyExA(keyHandle, "", 0, 0, 0, KEY_WOW64_32KEY | KEY_WRITE, 0, createdKeyHandle, 0)
-		; 			rstat = RegCloseKey(createdKeyHandle)
-		; 		rstat = RegCloseKey(keyHandle)
-		; 	}
-		; }
 	loop
 	;
 	; %UserProfile% application
@@ -153,21 +144,18 @@ if IsUserAnAdmin(){
 		rstat = RegCreateKeyExA(HKLM, lpSubKey, 0, 0, 0, KEY_WOW64_64KEY | KEY_WRITE, 0, varptr(keyHandle), 0)
 		rstat = RegSetValueExA(keyHandle, "ThisPCPolicy", 0, REG_SZ, plcValue, strlen(plcValue)+1)
 		rstat = RegCloseKey(KeyHandle)
-		if osBit != "x86" {
-			rstat = RegCreateKeyExA(HKLM, lpSubKey, 0, 0, 0, KEY_WOW64_32KEY | KEY_WRITE, 0, varptr(keyHandle), 0)
-			rstat = RegSetValueExA(keyHandle, "ThisPCPolicy", 0, REG_SZ, plcValue, strlen(plcValue)+1)
-			rstat = RegCloseKey(KeyHandle)
-		}
+		rstat = RegCreateKeyExA(HKLM, lpSubKey, 0, 0, 0, KEY_WOW64_32KEY | KEY_WRITE, 0, varptr(keyHandle), 0)
+		rstat = RegSetValueExA(keyHandle, "ThisPCPolicy", 0, REG_SZ, plcValue, strlen(plcValue)+1)
+		rstat = RegCloseKey(KeyHandle)
+		
 		lpSubKey = subKeyUP +"\\"+ keysUP.(cnt+2)
 		keyHandle=0
 		rstat = RegCreateKeyExA(HKLM, lpSubKey, 0, 0, 0, KEY_WOW64_64KEY | KEY_WRITE, 0, varptr(keyHandle), 0)
 		rstat = RegSetValueExA(keyHandle, "ThisPCPolicy", 0, REG_SZ, plcValue, strlen(plcValue)+1)
 		rstat = RegCloseKey(KeyHandle)
-		if osBit != "x86" {
-			rstat = RegCreateKeyExA(HKLM, lpSubKey, 0, 0, 0, KEY_WOW64_32KEY | KEY_WRITE, 0, varptr(keyHandle), 0)
-			rstat = RegSetValueExA(keyHandle, "ThisPCPolicy", 0, REG_SZ, plcValue, strlen(plcValue)+1)
-			rstat = RegCloseKey(KeyHandle)
-		}
+		rstat = RegCreateKeyExA(HKLM, lpSubKey, 0, 0, 0, KEY_WOW64_32KEY | KEY_WRITE, 0, varptr(keyHandle), 0)
+		rstat = RegSetValueExA(keyHandle, "ThisPCPolicy", 0, REG_SZ, plcValue, strlen(plcValue)+1)
+		rstat = RegCloseKey(KeyHandle)
 	loop
 	dialog i18n("finish")
 	goto *fresh_gui
