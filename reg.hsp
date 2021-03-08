@@ -1,22 +1,21 @@
-; ï¿½Ó‚ï¿½ï¿½Â‚ï¿½ Automatic-Fujitsubo
+; E½Ó‚ï¿½E½Â‚ï¿½ Automatic-Fujitsubo
 ; (C) 2021 inucat. Under GNU GPL.
 #packopt name "Fujitsubo"
-; #include "hspext.as"	; hspext.dll required
+#packopt hide 1
 #include "lang.hsp"
 #include "regconst.as"
 #include "hspinet.as"	; hspinet.dll required
-#include "hsp3util.as"
 #include "advapi32.as"
 #uselib "shell32.dll"					; For Check Admin
 #cfunc IsUserAnAdmin  "IsUserAnAdmin"
-#cmpopt	varinit 1	; ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì•Ïï¿½ï¿½Qï¿½Æ‚ï¿½ï¿½Gï¿½ï¿½ï¿½[ï¿½É‚ï¿½ï¿½ï¿½
+#cmpopt	varinit 1	; E½E½E½E½E½E½E½E½E½Ì•Ïï¿½E½QE½Æ‚ï¿½E½GE½E½E½[E½É‚ï¿½E½E½
 
-#const N 7				; ï¿½Ý’ï¿½Â”\ï¿½Èƒtï¿½Hï¿½ï¿½ï¿½_ï¿½ï¿½7ï¿½ï¿½
-#const N_UP 13			; %UserProfile% ï¿½ï¿½13ï¿½Â‚Ìƒtï¿½Hï¿½ï¿½ï¿½_
-#const CHK_W 128		; ï¿½`ï¿½Fï¿½bï¿½Nï¿½{ï¿½bï¿½Nï¿½Xï¿½Eï¿½{ï¿½^ï¿½ï¿½ï¿½Ì•ï¿½
+#const N 7				; E½Ý’ï¿½Â”\E½ÈƒtE½HE½E½E½_E½E½7E½E½
+#const N_UP 13			; %UserProfile% E½E½13E½Â‚ÌƒtE½HE½E½E½_
+#const CHK_W 128		; E½`E½FE½bE½NE½{E½bE½NE½XE½EE½{E½^E½E½E½Ì•ï¿½
 
 #define APP_TITLE i18n("appTitle")
-#define APP_VER "v1.0.1"
+#define APP_VER "v2.0"
 
 title APP_TITLE
 dim isVisiblePC,N
@@ -37,11 +36,11 @@ if osBit == "x86" {;   osBit=="x86" --> is WOW64 or true 32bit Win?
 if IsUserAnAdmin(){
 }else{
 	dialog i18n("adminDialog"),1,APP_TITLE
-	; end
+	end
 }
 
 *load_keys
-	screen 0,640,540 : cls 1 : objmode 2,1 : font "Yu Gothic UI",, 16 : mes i18n("loadReg") : logmes "......LOADING"
+	screen 1,CHK_W*3,540 : cls 1 : objmode 2,1 : font "Yu Gothic UI",, 16 : mes i18n("loadReg") : logmes "......LOADING"
 	; progbar 200,20 : IDPBar=stat : progbar_set IDPBar,100/(N+N_UP)
 	;
 	; This PC Keys
