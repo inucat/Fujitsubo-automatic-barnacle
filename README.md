@@ -19,9 +19,6 @@ Toggle Show/Hide folders in "This PC/User Folder" on Windows 10!<br>
 レジストリの書き換えによって表示を切り替えています。
 よって万が一の時は手動で書き換えることもできます。
 
-## 既知の問題点
-- レジストリの読み込みに時間がかかることがある。
-
 ## 告知事項
 作者はこのソフトウェアに不具合のないことを保証しません。
 このソフトウェアを使用することにより発生した、いかなる損害に対しても、作者は責任を負いません。
@@ -34,7 +31,7 @@ Toggle Show/Hide folders in "This PC/User Folder" on Windows 10!<br>
 ## 基本情報
 |**アプリ名**|ふじつぼ|
 |:---:|:---:|
-|**バージョン**|1.0.0|
+|**バージョン**|2.0|
 |**作者**|inucat|
 |**開発言語**|Hot Soup Processor 3|
 |**動作環境**|Windows 10|
@@ -46,11 +43,10 @@ Toggle Show/Hide folders in "This PC/User Folder" on Windows 10!<br>
 - Twitter: @inucat4
 - Github: inucatのIssue
 
-## 今後の予定
-- 開発言語をVB,C++,C#に切り替えるかも（高速化・効率化のため）
-- UIの改良をするかも
-
 ## 変更履歴
+- 2021-03-09 v2.0
+    - Win32 API を活用してレジストリアクセスを高速化。
+    - 一部の翻訳を修正。
 - 2021-03-04 v1.0.0
     - 英語表示に対応（Windowsの言語設定を自動で判別します。ただし未確認）。
     - ボタンの位置を修正。
@@ -81,9 +77,6 @@ Make sure all folders are checked then "Apply changes."
 `fujitsubo.exe` edits the registry values to toggle show/hide folders.
 You can modify them manually with `regedit.exe` if needed. 
 
-## Known issues
-- It takes time to load the registry data.
-
 ## NOTICE
 There are NO WARRANTY that this software is perfect and without any bugs or glitches;
 thus possible and potential risks may exist and may damage your system.
@@ -96,7 +89,7 @@ See `LICENSE` for details.
 ## Basic Information
 |**Application Name**|Fujitsubo|
 |:---:|:---:|
-|**Version**|1.0.0|
+|**Version**|2.0|
 |**Author**|inucat|
 |**Built on**|Hot Soup Processor 3|
 |**Required Environment**|Windows 10|
@@ -109,6 +102,9 @@ Use the media below if you want to report bugs:
 - Github: inucat
 
 ## Changelog
+- 2021-03-09 v2.0
+    - Reduce registry access time using Win32 API.
+    - Fixed some translations.
 - 2021-03-04 v1.0.0
     - Supports both English and Japanese (not checked yet).
     - Modified buttons layout.
