@@ -40,8 +40,9 @@ Toggle Show/Hide folders in "This PC/User Folder" on Windows 10!<br>
 
 ## 窓口
 不具合報告などは下記まで。
+- [ブログ記事](https://scr0000ge.hatenadiary.jp/entry/2021/03/09/103018)のコメント欄
+- Github: Issueタブから
 - Twitter: @inucat4
-- Github: inucatのIssue
 
 ## 変更履歴
 - 2021-03-09 v2.0
@@ -98,8 +99,9 @@ See `LICENSE` for details.
 
 ## Support
 Use the media below if you want to report bugs:
+- The comment area in [this blog article](https://scr0000ge.hatenadiary.jp/entry/2021/03/09/103018)
+- Github: inucat's Issue
 - Twitter: @inucat4
-- Github: inucat
 
 ## Changelog
 - 2021-03-09 v2.0
