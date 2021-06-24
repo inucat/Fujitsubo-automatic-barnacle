@@ -1,3 +1,4 @@
+⚠️ アプリ名を変更しました。 / App name has been changed.
 :point_right: [最新版/Latest](https://github.com/inucat/Fujitsubo-automatic-barnacle/releases/latest)
 
 # Hide Personal Folders
